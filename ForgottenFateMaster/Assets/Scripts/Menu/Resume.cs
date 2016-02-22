@@ -8,7 +8,6 @@ public class Resume : MonoBehaviour {
 	public void ResumeGame()
 	{
 		pauseMenu.SetActive (false);
-		Screen.lockCursor = true;
 		Time.timeScale = 1;
 	}
 }
