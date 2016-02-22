@@ -11,7 +11,8 @@ public class CombatScript : MonoBehaviour
 	public float maxMana;
 	public float manaRecovery = 0.03f;
 	private float mana;
-	public float normalDamage = 3;
+	public float normalDamage = 7;
+	public float rangeDamage = 3;
 	[HideInInspector]
 	public float playerDamage = 3;
 	public float attackSpeed = 5.0f;
@@ -26,14 +27,23 @@ public class CombatScript : MonoBehaviour
 	private float chargeMultiplier = 10.0f;
 	[HideInInspector]
 	public float chargeDistance;
-	
+	public bool melee = true;
+	public Rigidbody projectile;
+	[HideInInspector]
+	public Transform target;
 	
 	[HideInInspector]
 	public int splash;
 	[HideInInspector]
 	public float attackRate;  //rate of attack
-	
-	void Awake()
+
+    //----------EXP--------
+    [HideInInspector]
+    public float exp;
+    public int playerLevel = 1;
+
+
+    void Awake()
 	{
 		mana = maxMana;
 		health = maxHealth;
@@ -42,13 +52,33 @@ public class CombatScript : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-		
-		
+
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
+	
+
+
+		//switching from melee to range
+		if (Input.GetKeyUp(KeyCode.E))
+	    {
+			if (melee == false)
+			{
+				melee = true;
+				//print ("true");
+			}
+			//switching from range to melee
+			else
+			{
+				melee = false;
+				//print ("false");
+			}
+	    }
+		
+
+
 		if (health == 0)
 		{
 			Destroy (gameObject);
@@ -72,29 +102,99 @@ public class CombatScript : MonoBehaviour
 			criticalChance = 0.08f;
 		
 		
-		if(Input.GetMouseButtonDown(0) && attackRate == 0)  //left click
-		{
-			if (!self.GetComponent<PlayerMovement>().isSprinting)
+		if (Input.GetMouseButtonDown (0) && attackRate == 0) //left click
+		{ 
+
+			if (melee == true)
 			{
-				playerDamage = normalDamage;
-				splash = 1; 
-				attackRate = 5;
+				if (!self.GetComponent<PlayerMovement> ().isSprinting) 
+				{
+					playerDamage = normalDamage;
+					splash = 1; 
+					attackRate = 5;
+					
+					//the value of this variable determines how many foes can be hit in a single attack
+					//since it's currently set to 1, only one foe can be hit at a time.
+					//certain spells, such as a multi attack, will require this variable to increase.
+					
+					//play sound
+					//attack animation
+				}
+				if (self.GetComponent<PlayerMovement> ().isSprinting)
+				{
+					playerDamage = normalDamage * chargeMultiplier;
+					splash = 5; 
+					chargeDistance = 1.2f;
+					self.GetComponent<PlayerMovement> ().moveX = self.GetComponent<PlayerMovement> ().moveX * 25;
+					self.GetComponent<PlayerMovement> ().moveY = self.GetComponent<PlayerMovement> ().moveY * 25;
 				
-				//the value of this variable determines how many foes can be hit in a single attack
-				//since it's currently set to 1, only one foe can be hit at a time.
-				//certain spells, such as a multi attack, will require this variable to increase.
-				
-				//play sound
-				//attack animation
+				}
 			}
-			if (self.GetComponent<PlayerMovement>().isSprinting)
+			if (melee == false)
 			{
-				playerDamage = normalDamage * chargeMultiplier;
-				splash = 5; 
-				chargeDistance = 1.2f;
-				self.GetComponent<PlayerMovement>().moveX = self.GetComponent<PlayerMovement>().moveX * 25;
-				self.GetComponent<PlayerMovement>().moveY = self.GetComponent<PlayerMovement>().moveY * 25;
+
+				if (!target)
+				target = GameObject.FindWithTag ("Mouse").transform;
+				Vector3 pos;
+			//	pos = new Vector3 (Random.Range (-0.8f, 1.2f), Random.Range (-0.8f, 1.2f), 0);
+
+				playerDamage = rangeDamage;
+				attackRate = 4;
+
+                Vector3 v3Pos;
+                float fAngle;
+
+                v3Pos = Camera.main.WorldToScreenPoint(target.transform.position);
+                v3Pos = Input.mousePosition - v3Pos;
+                fAngle = Mathf.Atan2(v3Pos.y, v3Pos.x) * Mathf.Rad2Deg;
+                if (fAngle < 0.0f) fAngle += 360.0f;
+                
+                //Quaternion projectileAngle = new Quaternion(0f, fAngle, 0f, 0f);
+                Rigidbody clone;
+                clone = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
+                //Instantiate(projectile, transform.position, projectileAngle);
+
+                
+                //		Debug.Log ("3" +fAngle);  
+
+                //detecting arrow direction witht he variable direction
+                if (fAngle <= 135.0F && fAngle > 45.0F)
+					{
+						print ("up");
+						clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range (10,14);
+						down.SetActive (false);
+						left.SetActive (false);
+						right.SetActive (false);
+						up.SetActive (true);
+					}
+                if (fAngle <= 45.0F || fAngle > 315.0F)
+					{
+						print ("right");
+						clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position ).normalized * Random.Range (10,14);
+						up.SetActive (false);
+						down.SetActive (false);
+						left.SetActive (false);
+						right.SetActive (true);
+					}
+					if (fAngle <= 225.0F && fAngle > 135.0F)
+					{
+						print ("left");
+						clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range (10,14);
+						up.SetActive (false);
+						down.SetActive (false);
+						right.SetActive (false);
+						left.SetActive (true);
+					}
+                if (fAngle <= 315.0F && fAngle > 225.0F)
+                    {
+						print ("down");
+					    clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range (10,14); 
+						up.SetActive (false);
+						left.SetActive (false);
+						right.SetActive (false);
+						down.SetActive (true);
 				
+					}
 			}
 		}
 		
@@ -144,6 +244,7 @@ public class CombatScript : MonoBehaviour
 			down.SetActive (false);
 			left.SetActive (false);
 			right.SetActive (true);
+
 		}
 		//facing left
 		if (self.GetComponent<PlayerMovement>().moveX < 0)
@@ -152,6 +253,7 @@ public class CombatScript : MonoBehaviour
 			down.SetActive (false);
 			left.SetActive (true);
 			right.SetActive (false);
+
 		}
 		//facing up
 		if (self.GetComponent<PlayerMovement>().moveY > 0)
@@ -160,6 +262,7 @@ public class CombatScript : MonoBehaviour
 			down.SetActive (false);
 			left.SetActive (false);
 			right.SetActive (false);
+
 		}
 		//facing down
 		if (self.GetComponent<PlayerMovement>().moveY < 0)
@@ -168,11 +271,9 @@ public class CombatScript : MonoBehaviour
 			down.SetActive (true);
 			left.SetActive (false);
 			right.SetActive (false);
+
 		}
 	}
-	IEnumerator WaitAndPrint(float waitTime)
-	{
-		yield return new WaitForSeconds(0.5f);
-	}
-}
 
+
+}

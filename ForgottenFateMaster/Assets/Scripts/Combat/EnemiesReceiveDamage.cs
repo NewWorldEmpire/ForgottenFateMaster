@@ -22,9 +22,17 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 	float hitChance;
 	public float criticalChance =0.03f;
 	public Rigidbody rb;
-	
-	
-	void Awake()
+    public GameObject hPBar;
+    private float hPTimer;
+
+    //----EXP Variables---------
+    public int enemyLevel = 0;
+    public float exp = 0f;
+    //private float playerLevel	= 1;
+    private float maxExp = 0f;
+
+
+    void Awake()
 	{
 		hp = maxHp;
 	}
@@ -45,7 +53,25 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 		if (hp <= 0) 
 		{
 			Destroy (gameObject);
-		}
+
+            _player.GetComponent<CombatScript>().exp += (enemyLevel * 10);
+
+            Debug.Log(_player.GetComponent<CombatScript>().exp + " exp");
+
+            //maxExp = 100 * Mathf.Pow(2.00 , _player.GetComponent<CombatScript>(). playerLevel);
+            maxExp = 100 * _player.GetComponent<CombatScript>().playerLevel;
+            Debug.Log(maxExp + " maxExp before level");
+
+            if (_player.GetComponent<CombatScript>().exp >= maxExp)
+            {
+                _player.GetComponent<CombatScript>().playerLevel++;
+                _player.GetComponent<CombatScript>().exp = _player.GetComponent<CombatScript>().exp - maxExp;
+                _player.GetComponent<CombatScript>().normalDamage++;
+                Debug.Log(exp + " exp after level");
+                Debug.Log(_player.GetComponent<CombatScript>().playerLevel + "PLAYER LEVEL");
+                Debug.Log(_player.GetComponent<CombatScript>().normalDamage + " damage");
+            }
+        }
 		
 		if (defense < 1)
 			defense = 1;
@@ -81,7 +107,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 				
 				if (hitChance <= 1 && (hitChance >= defDex_calc)) {
 					damageTaken = 0;
-					InitCBT ("*miss").GetComponent<Animator> ().SetTrigger ("Miss");
+					InitCBT ("*miss*").GetComponent<Animator> ().SetTrigger ("Miss");
 					hitChance = 2;
 					hit = true;
 				}
@@ -137,12 +163,83 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 		}
 		
 	}
-	
-	
-	
-	//this method or function calls for the "CBT" prefab's transforms and animation seuquences.
-	// this is used for animating the damage text shown when the player hits a target.
-	GameObject InitCBT(string text)
+
+    void OnTriggerEnter(Collider ar)
+    {
+
+        hPTimer = 3;
+        hPBar.SetActive(true);
+        //dealing damage to object
+        if (ar.gameObject.tag == "Arrow")
+        {
+            //Destroy(ar.gameObject);
+            //using calculations to determine the chance of landing a hit.
+            //this also makes sure that chance of hitting cannot be greater or less than a set amount.
+            hitChance = Random.Range(0.0f, 1.0f);
+            defDex_calc = (_player.GetComponent<CombatScript>().dexterity - defense) / _player.GetComponent<CombatScript>().dexterity;
+            if (defDex_calc > 0.95f)
+                defDex_calc = .95f;
+            if (defDex_calc < 0.05f)
+                defDex_calc = .05f;
+            _player.GetComponent<CombatScript>().splash -= 1;
+
+            //				Debug.Log (defDex_calc);
+
+            //causing damage and estimating chances
+
+            if (hitChance <= 1 && (hitChance >= defDex_calc))
+            {
+                damageTaken = 0;
+                InitCBT("*miss").GetComponent<Animator>().SetTrigger("Miss");
+                hitChance = 2;
+            }
+            if (hitChance <= 1 && (hitChance < defDex_calc))
+            {
+                Destroy(ar.gameObject);
+                hitChance = 2;
+                damageTaken = _player.GetComponent<CombatScript>().playerDamage;
+                if (damageTaken > armor + 1)
+                    damageTaken = damageTaken - armor;
+                else
+                    damageTaken = 2;
+                damageTaken = Random.Range(damageTaken * 0.7f, damageTaken);
+                damageTaken = -damageTaken;
+                criticalHit = Random.Range(0, 1.0f);
+                //print ("crit" + criticalHit);
+
+                //Damage caused by critical hit (critical hits do 5 times more than normal damage).
+                if (criticalHit < 2 && criticalHit <= _player.GetComponent<CombatScript>().criticalChance)
+                {
+                    damageTaken = (damageTaken * 5);
+                    damageTaken = Mathf.Round(damageTaken * 10f) / 10f;
+                    InitCBT(damageTaken.ToString()).GetComponent<Animator>().SetTrigger("Crit");
+                    //print ("damageTaken " + damageTaken);
+                    hp += damageTaken;
+                    calculator = hp / maxHp;
+                    SetHealth(calculator);
+                    criticalHit = 2;
+                    //sound
+                }
+                //Nomal damage
+                if (criticalHit < 2 && criticalHit != _player.GetComponent<CombatScript>().criticalChance)
+                {
+                    damageTaken = Mathf.Round(damageTaken * 10f) / 10f;
+                    //print ("damageTaken " + damageTaken);
+                    InitCBT(damageTaken.ToString()).GetComponent<Animator>().SetTrigger("Hit");
+                    hp += damageTaken;
+                    calculator = hp / maxHp;
+                    SetHealth(calculator);
+                    criticalHit = 2;
+                    //sound
+                }
+            }
+        }
+    }
+
+
+    //this method or function calls for the "CBT" prefab's transforms and animation seuquences.
+    // this is used for animating the damage text shown when the player hits a target.
+    GameObject InitCBT(string text)
 	{
 		GameObject temp = Instantiate (CBTPrefab) as GameObject;
 		RectTransform tempRect = temp.GetComponent<RectTransform>();
@@ -165,7 +262,4 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 		healthBar.transform.localScale = new Vector3 (myHealth, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
 		healthBar.color = Color.Lerp(endColor, startColor, calculator);
 	}
-	
-	
-	
 }
