@@ -23,7 +23,6 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 	public float criticalChance =0.03f;
 	public Rigidbody rb;
     public GameObject hPBar;
-    private float hPTimer;
 
     //----EXP Variables---------
     public int enemyLevel = 0;
@@ -167,7 +166,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
     void OnTriggerEnter(Collider ar)
     {
 
-        hPTimer = 3;
+        
         hPBar.SetActive(true);
         //dealing damage to object
         if (ar.gameObject.tag == "Arrow")
@@ -190,7 +189,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
             if (hitChance <= 1 && (hitChance >= defDex_calc))
             {
                 damageTaken = 0;
-                InitCBT("*miss").GetComponent<Animator>().SetTrigger("Miss");
+                InitCBT("*miss*").GetComponent<Animator>().SetTrigger("Miss");
                 hitChance = 2;
             }
             if (hitChance <= 1 && (hitChance < defDex_calc))

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class ConversationScript : MonoBehaviour {
 
-    public string[] conversation;
+    public static string[] conversation;
     [HideInInspector]
     public string text;
     public Text textBox;
@@ -14,7 +14,7 @@ public class ConversationScript : MonoBehaviour {
     public int convIndex = 0;
     int maxConvIndex;
     [HideInInspector]
-    public bool convoDone = false;
+    public static bool convoDone = false;
 	public AudioSource sound;
 
     // Use this for initialization
@@ -35,6 +35,7 @@ public class ConversationScript : MonoBehaviour {
         if(convIndex == maxConvIndex)
         {
             convoDone = true;
+            convIndex = 0;
         }
     }
 

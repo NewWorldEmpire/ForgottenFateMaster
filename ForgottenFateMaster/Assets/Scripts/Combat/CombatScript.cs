@@ -62,7 +62,7 @@ public class CombatScript : MonoBehaviour
 
 
 		//switching from melee to range
-		if (Input.GetKeyUp(KeyCode.E))
+		if (Input.GetKeyUp(KeyCode.Q))
 	    {
 			if (melee == false)
 			{
@@ -135,9 +135,7 @@ public class CombatScript : MonoBehaviour
 
 				if (!target)
 				target = GameObject.FindWithTag ("Mouse").transform;
-				Vector3 pos;
-			//	pos = new Vector3 (Random.Range (-0.8f, 1.2f), Random.Range (-0.8f, 1.2f), 0);
-
+				
 				playerDamage = rangeDamage;
 				attackRate = 4;
 
@@ -154,14 +152,16 @@ public class CombatScript : MonoBehaviour
                 clone = Instantiate(projectile, transform.position, transform.rotation) as Rigidbody;
                 //Instantiate(projectile, transform.position, projectileAngle);
 
-                
+
                 //		Debug.Log ("3" +fAngle);  
+               //  print(GameObject.Find("Mouse").transform.position);
 
                 //detecting arrow direction witht he variable direction
                 if (fAngle <= 135.0F && fAngle > 45.0F)
 					{
 						print ("up");
 						clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range (10,14);
+                    print(clone.velocity + "up velocity");
 						down.SetActive (false);
 						left.SetActive (false);
 						right.SetActive (false);
@@ -171,7 +171,8 @@ public class CombatScript : MonoBehaviour
 					{
 						print ("right");
 						clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position ).normalized * Random.Range (10,14);
-						up.SetActive (false);
+                        print(clone.velocity + "right velocity");
+                        up.SetActive (false);
 						down.SetActive (false);
 						left.SetActive (false);
 						right.SetActive (true);
