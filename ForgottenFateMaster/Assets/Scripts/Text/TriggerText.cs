@@ -5,7 +5,7 @@ using System.Collections;
 public class TriggerText : MonoBehaviour {
 
     public GameObject player;
-    public GameObject canvas;
+    public GameObject panel;
     public Text text;
     public Image face;
     public Sprite NPCImage;
@@ -36,7 +36,7 @@ public class TriggerText : MonoBehaviour {
 
         if (index >= targetArray.Length)
         {
-            canvas.SetActive(false);
+            panel.SetActive(false);
         }
         else
         {
@@ -44,13 +44,13 @@ public class TriggerText : MonoBehaviour {
             {
                 face.sprite = NPCImage;
                 ConversationScript.conversation = dialogue;
-                canvas.SetActive(true);
+                panel.SetActive(true);
                 player.GetComponent<PlayerMovement>().enabled = false;
                 player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             }
             else if (ConversationScript.convoDone && (Input.GetKeyDown("e") || (Input.GetMouseButtonDown(0))))              //this runs when the dialogue is done
             {
-                canvas.SetActive(false);
+                panel.SetActive(false);
                 text.GetComponent<ConversationScript>().convIndex = 0;
                 player.GetComponent<PlayerMovement>().enabled = true;
             }

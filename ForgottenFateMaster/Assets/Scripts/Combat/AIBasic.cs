@@ -23,7 +23,6 @@ public class AIBasic : MonoBehaviour {
 		if (fpsTargetDistance < attackDistance)
 		{
 			MovingPhase();
-			Debug.Log ("ATTACK!");
 		}
 	}
 
@@ -34,28 +33,21 @@ public class AIBasic : MonoBehaviour {
 			if (fpsTarget.position.y > transform.position.y) 
 			{
 				transform.position += transform.up * enemyMovementSpeed * Time.deltaTime;
-				Debug.Log ("We;re going up!");
 			} 
 			else 
 			{
 				transform.position += transform.up * -enemyMovementSpeed * Time.deltaTime;
-				Debug.Log ("We;re going down!");
 			}
-
-
 
 			if (fpsTarget.position.x > transform.position.x)
 			{
 				transform.position += transform.right * enemyMovementSpeed * Time.deltaTime;
-				Debug.Log ("We;re going right!!");
 			}
 			else 
 			{
 				transform.position += transform.right * -enemyMovementSpeed * Time.deltaTime;
-				Debug.Log ("We;re going left!");
 			}
 		}
-
 	}
 
 	void OnCollisionStay2D(Collision2D playerC)
@@ -63,7 +55,6 @@ public class AIBasic : MonoBehaviour {
 		if (playerC.gameObject.tag == "Player") 
 		{
 			isNotTouching = false;
-			Debug.Log ("HEHE they're touching");
 		}
 	}
 
@@ -71,6 +62,4 @@ public class AIBasic : MonoBehaviour {
 	{
 		isNotTouching = true;
 	}
-
-
 }
