@@ -55,6 +55,7 @@ public class AIBasic : MonoBehaviour {
 		if (playerC.gameObject.tag == "Player") 
 		{
 			isNotTouching = false;
+            fpsTarget.GetComponent<PlayerReceivesDamage>().meleeHits++;
 		}
 	}
 

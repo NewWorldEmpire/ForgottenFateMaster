@@ -25,7 +25,7 @@ public class CombatScript : MonoBehaviour
 	public float meleeRange = 0.8f;
 	public float meleeAdjustment = 0.5f;
 	public int maxHealth = 65;
-	float health;
+	public float health;
 	public float criticalChance = 0.03f;
 	private float chargeMultiplier = 10.0f;
 	[HideInInspector]
