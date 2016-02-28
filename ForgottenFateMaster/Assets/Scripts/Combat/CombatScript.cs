@@ -11,7 +11,7 @@ public class CombatScript : MonoBehaviour
 	public GameObject right;
 	public float maxMana;
 	public float manaRecovery = 0.03f;
-	private float mana;
+	public float mana;
 	public float normalDamage = 7;
 	public float rangeDamage = 3;
 	[HideInInspector]
@@ -50,6 +50,7 @@ public class CombatScript : MonoBehaviour
     [HideInInspector]
     public float exp;
     public int playerLevel = 1;
+    public float maxExp = 0f;
 
 
     void Awake()
@@ -67,7 +68,7 @@ public class CombatScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-	
+        
 
 
 		//switching from melee to range
@@ -88,11 +89,11 @@ public class CombatScript : MonoBehaviour
 		
 
 
-		if (health == 0)
+		if (health <= 0)
 		{
 			Destroy (gameObject);
 			//pay animation
-			//play sound
+			//pay sound
 		}
 		
 		
@@ -252,13 +253,8 @@ public class CombatScript : MonoBehaviour
 			self.GetComponent<PlayerMovement>().moveX = 0;
 			self.GetComponent<PlayerMovement>().moveY = 0;
 
-
-
-
 			if (!target)
 				target = GameObject.FindWithTag ("Mouse").transform;
-
-
 
 			Vector3 v3Pos;
 			float fAngle;
@@ -273,9 +269,7 @@ public class CombatScript : MonoBehaviour
 			if (fAngle < 0.0f) 
 				fAngle += 360.0f;
 
-			//flame goes in the direction of the mouse
-
-			
+			//flame goes in the direction of the mouse			
 			
 			if (fAngle <= 135.0F && fAngle > 45.0F)
 			{
@@ -286,6 +280,7 @@ public class CombatScript : MonoBehaviour
 				right.SetActive (false);
 				up.SetActive (true);
 			}
+
 			if (fAngle <= 45.0F || fAngle > 315.0F)
 			{
 				print ("right");
@@ -295,6 +290,7 @@ public class CombatScript : MonoBehaviour
 				left.SetActive (false);
 				right.SetActive (true);
 			}
+
 			if (fAngle <= 225.0F && fAngle > 135.0F)
 			{
 				print ("left");

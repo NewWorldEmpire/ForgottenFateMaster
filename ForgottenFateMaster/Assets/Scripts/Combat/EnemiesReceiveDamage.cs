@@ -32,7 +32,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
     public int enemyLevel = 0;
     public float exp = 0f;
     //private float playerLevel	= 1;
-    private float maxExp = 0f;
+    //private float maxExp = 0f;
 
 
     void Awake()
@@ -46,7 +46,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
 	{
 		
 		rb = GetComponent<Rigidbody2D>();
-		
+        _player.GetComponent<CombatScript>().maxExp = 100 * _player.GetComponent<CombatScript>().playerLevel; //so maxExp =/= 0
 	}
 	
 	// Update is called once per frame
@@ -94,13 +94,13 @@ public class EnemiesReceiveDamage : MonoBehaviour {
             Debug.Log(_player.GetComponent<CombatScript>().exp + " exp");
 
             //maxExp = 100 * Mathf.Pow(2.00 , _player.GetComponent<CombatScript>(). playerLevel);
-            maxExp = 100 * _player.GetComponent<CombatScript>().playerLevel;
-            Debug.Log(maxExp + " maxExp before level");
+            _player.GetComponent<CombatScript>().maxExp = 100 * _player.GetComponent<CombatScript>().playerLevel;
+            Debug.Log(_player.GetComponent<CombatScript>().maxExp + " maxExp before level");
 
-            if (_player.GetComponent<CombatScript>().exp >= maxExp)
+            if (_player.GetComponent<CombatScript>().exp >= _player.GetComponent<CombatScript>().maxExp)
             {
                 _player.GetComponent<CombatScript>().playerLevel++;
-                _player.GetComponent<CombatScript>().exp = _player.GetComponent<CombatScript>().exp - maxExp;
+                _player.GetComponent<CombatScript>().exp = _player.GetComponent<CombatScript>().exp - _player.GetComponent<CombatScript>().maxExp;
                 _player.GetComponent<CombatScript>().normalDamage++;
                 Debug.Log(exp + " exp after level");
                 Debug.Log(_player.GetComponent<CombatScript>().playerLevel + "PLAYER LEVEL");
