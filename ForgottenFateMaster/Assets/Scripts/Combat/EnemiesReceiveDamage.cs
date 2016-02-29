@@ -249,7 +249,8 @@ public class EnemiesReceiveDamage : MonoBehaviour {
             {
 				Destroy(ar.gameObject);
                 hitChance = 2;
-                damageTaken = _player.GetComponent<CombatScript>().playerDamage;
+                //damageTaken = _player.GetComponent<CombatScript>().playerDamage;
+                damageTaken = ar.GetComponent<ArrowScript>().myDMG;
                 if (damageTaken > armor + 1)
                     damageTaken = damageTaken - armor;
                 else
