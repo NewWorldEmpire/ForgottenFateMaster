@@ -18,7 +18,7 @@ public class CombatScript : MonoBehaviour
 	[HideInInspector]
 	public float playerDamage = 3;
 	[HideInInspector]
-	public float fireDamage = 0.1f;
+	public float fireDamage = 0.2f;
 	public float attackSpeed = 5.0f;
 	public int defense;
 	public int armor;
@@ -93,6 +93,7 @@ public class CombatScript : MonoBehaviour
 		if (health <= 0)
 		{
 			Destroy (gameObject);
+            Application.LoadLevel("GameOverScreen");
 			//pay animation
 			//pay sound
 		}		
@@ -161,8 +162,11 @@ public class CombatScript : MonoBehaviour
         //using arrows
         if (Input.GetMouseButtonUp(0) && melee == false && attackRate == 0)
         {
+            
             energy.SetActive(false);
             attackRate = chargeShot * 3;
+            if (attackRate <= 8)
+                attackRate = 8;
 
             if (!target)
                 target = GameObject.FindWithTag("Mouse").transform;
