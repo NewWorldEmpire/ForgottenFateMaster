@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class EnemiesReceiveDamage : MonoBehaviour {
 	public float maxHp;
-	float hp;
+	public float hp;
 	private bool hit = false;
 	public GameObject _player;
 	private float damageTaken;

@@ -9,8 +9,12 @@ public class TriggerText : MonoBehaviour {
     public Text text;
     public Image face;
     public Sprite NPCImage;
-    public GameObject target;
-    
+    public GameObject skills;
+    public GameObject playerStatusHUD;
+
+    [HideInInspector]
+    public GameObject target;    
+    [HideInInspector]
     public string[] dialogue;
     string[] temp;
     int dialogueLength;
@@ -40,8 +44,10 @@ public class TriggerText : MonoBehaviour {
         }
         else
         {
-            if (ConversationScript.convoDone == false && Input.GetKeyDown("e") )                                             //this activates when the player enters the collider and presses e
+            if (ConversationScript.convoDone == false && Input.GetKeyDown("e") )            //this activates when the player enters the collider and presses e
             {
+                skills.SetActive(false);
+                playerStatusHUD.SetActive(false);
                 face.sprite = NPCImage;
                 ConversationScript.conversation = dialogue;
                 panel.SetActive(true);
@@ -52,6 +58,8 @@ public class TriggerText : MonoBehaviour {
             {
                 panel.SetActive(false);
                 ConversationScript.convIndex = 0;
+                skills.SetActive(true);
+                playerStatusHUD.SetActive(true);
                 player.GetComponent<PlayerMovement>().enabled = true;
             }
         }
