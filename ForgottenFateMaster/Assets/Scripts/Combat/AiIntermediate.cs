@@ -105,7 +105,7 @@ public class AiIntermediate : MonoBehaviour {
 	{
 		if (runAway) 
 		{
-			print ("RUN AWAY!");
+			//print ("RUN AWAY!");
 			//---------Opposite of isNotTouching------------
 			if (target.position.y > transform.position.y) {
 				transform.position += transform.up * -normalMovementSpeed * Time.deltaTime;
