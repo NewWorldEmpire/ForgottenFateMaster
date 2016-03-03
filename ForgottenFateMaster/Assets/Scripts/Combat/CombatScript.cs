@@ -4,52 +4,70 @@ using System.Collections;
 
 public class CombatScript : MonoBehaviour 
 {
-	public GameObject self;
-	public Transform playerPOS;
-	public GameObject up;
-	public GameObject down;
-	public GameObject left;
-	public GameObject right;
-	public float maxMana;
-	public float manaRecovery = 0.03f;
-	public float mana;
-	public float normalDamage = 7;
-	public float rangeDamage = 3;
-	[HideInInspector]
-	public float playerDamage = 3;
-	[HideInInspector]
-	public float fireDamage = 0.2f;
-	public float attackSpeed = 5.0f;
-	public int defense;
-	public int armor;
-	public float dexterity; // chance of hitting
-	public float meleeRange = 0.8f;
-	public float meleeAdjustment = 0.5f;
-	public int maxHealth = 65;
-	public float health;
-	public float criticalChance = 0.03f;
-	private float chargeMultiplier = 10.0f;
-	[HideInInspector]
-	public float chargeDistance;
-	public bool melee = true;
-	public Rigidbody2D projectile;
-	public Rigidbody2D flamePrefab;
-	[HideInInspector]
-	public Transform target;
-	public GameObject smokeChild;
+    public GameObject self;
+    public Transform playerPOS;
+    public GameObject up;
+    public GameObject down;
+    public GameObject left;
+    public GameObject right;
+    public float maxMana = 65;
+    public float manaRecovery = 1.0f;
+    public float mana;
+    public float normalDamage = 7;
+    public float rangeDamage = 3;
+    [HideInInspector]
+    public float playerDamage = 3;
+    [HideInInspector]
+    public float fireDamage = 0.2f;
+    public float attackSpeed = 5.0f;
+    public int defense;
+    public int armor;
+    public float dexterity; // chance of hitting
+    public float meleeRange = 0.8f;
+    public float meleeAdjustment = 0.5f;
+    public int maxHealth = 65;
+    public float health;
+    [Range(0.03f, 0.08f)]
+    public float criticalChance;
+    [Range(2, 5)]
+    public int criticalDamage;
+    private float chargeMultiplier = 10.0f;
+    [HideInInspector]
+    public float chargeDistance;
+    public bool melee = true;
+    public Rigidbody2D projectile;
+    public Rigidbody2D flamePrefab;
+    [HideInInspector]
+    public Transform target;
+    public GameObject smokeChild;
     [HideInInspector]
     public float chargeShot;
     public Color32 startColor;
     public Color32 endColor;
     public Image energyBar;
     public GameObject energy;
+    public Transform restorationPrefab;
+    //***calculators**
     float calculator;
+    float calculator2;
+    float calculator3;
+    //[HideInInspector]
+    public int spells = 1;
+    public GameObject shieldChild;
+    public int shield;
+    public int healthRestore = 25;
+    float shieldCoolDown;
+    float shieldTimer;
+    float restoreTimer;
+    float restoreCoolDown;
+    public Image CoolDownImageShield;
+    public Image CoolDownImageRestore;
 
-	
-	[HideInInspector]
-	public int splash;
-	[HideInInspector]
-	public float attackRate;  //rate of attack
+
+    [HideInInspector]
+    public int splash;
+    [HideInInspector]
+    public float attackRate;  //rate of attack
 
 
     //----------EXP--------
@@ -60,94 +78,101 @@ public class CombatScript : MonoBehaviour
 
 
     void Awake()
-	{
-		mana = maxMana;
-		health = maxHealth;
-	}
-	
-	// Use this for initialization
-	void Start () 
-	{
+    {
+        mana = maxMana;
+        health = maxHealth;
+    }
 
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		//switching from melee to range
-		if (Input.GetKeyUp(KeyCode.Q))
-	    {
-			if (melee == false)
-			{
-				melee = true;
-				//print ("true");
-			}
-			//switching from range to melee
-			else
-			{
-				melee = false;
-				//print ("false");
-			}
-	    }
+    // Use this for initialization
+    void Start()
+    {
 
-		if (health <= 0)
-		{
-			Destroy (gameObject);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        //switching from melee to range
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            if (melee == false)
+            {
+                melee = true;
+                //print ("true");
+            }
+            //switching from range to melee
+            else
+            {
+                melee = false;
+                //print ("false");
+            }
+        }
+
+        if (health <= 0)
+        {
+            health = 0;
+            Destroy(gameObject);
             Application.LoadLevel("GameOverScreen");
-			//pay animation
-			//pay sound
-		}		
-		
-		//setting the scale of objects to range of melee weapon
-		up.transform.localScale = new Vector3(0, meleeRange, 0);
-		up.transform.localPosition = new Vector3(0, meleeAdjustment, 0);
-		down.transform.localScale = new Vector3(0, -meleeRange, 0);
-		down.transform.localPosition = new Vector3(0, -meleeAdjustment, 0);
-		left.transform.localScale = new Vector3(-meleeRange, 0, 0);
-		left.transform.localPosition = new Vector3(-meleeAdjustment, 0, 0);
-		right.transform.localScale = new Vector3(meleeRange, 0, 0);
-		right.transform.localPosition = new Vector3(meleeAdjustment, 0, 0);
-		
-		if (criticalChance > 0.08f)
-			criticalChance = 0.08f;		
-		
-		if (Input.GetMouseButtonDown (0) && attackRate == 0) //left click
-		{ 
-			if (melee == true)
-			{
-				//attack whie sprint is not active (normal attack)
-				if (!self.GetComponent<PlayerMovement> ().isSprinting) 
-				{
-					playerDamage = normalDamage;
-					splash = 1; 
-					attackRate = 5;
-					
-					//the value of this variable,splash, determines how many foes can be hit within a single attack
-					//since it's currently set to 1, only one foe can be hit at a time.
-					//certain spells, such as a multi attack, will require this variable to increase.
-					
-					//play sound
-					//attack animation
-				}
+            //pay animation
+            //pay sound
+        }
+        if (health > maxHealth)
+            health = maxHealth;
 
-				//attack during sprint (Dash attack)
-				if ((self.GetComponent<PlayerMovement> ().isSprinting) && (self.GetComponent<PlayerMovement> ().moveX != 0 || self.GetComponent<PlayerMovement> ().moveY != 0))
-				{
-					chargeDistance = 1.2f;
-					Vector3 playerPOS = self.transform.position;
-					smokeChild.transform.position = playerPOS;
-					playerDamage = normalDamage * chargeMultiplier;
-					splash = 5; 
-					self.GetComponent<PlayerMovement> ().moveX = self.GetComponent<PlayerMovement> ().moveX * 25;
-					self.GetComponent<PlayerMovement> ().moveY = self.GetComponent<PlayerMovement> ().moveY * 25;
-					smokeChild.SetActive(true);				
-				}
-			}
+        //setting the scale of objects to range of melee weapon
+        up.transform.localScale = new Vector3(0, meleeRange, 0);
+        up.transform.localPosition = new Vector3(0, meleeAdjustment, 0);
+        down.transform.localScale = new Vector3(0, -meleeRange, 0);
+        down.transform.localPosition = new Vector3(0, -meleeAdjustment, 0);
+        left.transform.localScale = new Vector3(-meleeRange, 0, 0);
+        left.transform.localPosition = new Vector3(-meleeAdjustment, 0, 0);
+        right.transform.localScale = new Vector3(meleeRange, 0, 0);
+        right.transform.localPosition = new Vector3(meleeAdjustment, 0, 0);
+
+        if (criticalChance > 0.08f)
+            criticalChance = 0.08f;
+
+        if (Input.GetMouseButtonDown(0) && attackRate == 0) //left click
+        {
+            if (melee == true)
+            {
+                //attack whie sprint is not active (normal attack)
+                if (!self.GetComponent<PlayerMovement>().isSprinting)
+                {
+                    playerDamage = normalDamage;
+                    splash = 1;
+                    attackRate = 5;
+
+                    //the value of this variable,splash, determines how many foes can be hit within a single attack
+                    //since it's currently set to 1, only one foe can be hit at a time.
+                    //certain spells, such as a multi attack, will require this variable to increase.
+
+                    //play sound
+                    //attack animation
+                }
+
+                //attack during sprint (Dash attack)
+                if ((self.GetComponent<PlayerMovement>().isSprinting) && (self.GetComponent<PlayerMovement>().moveX != 0 || self.GetComponent<PlayerMovement>().moveY != 0))
+                {
+                    chargeDistance = 1.2f;
+                    Vector3 playerPOS = self.transform.position;
+                    smokeChild.transform.position = playerPOS;
+                    playerDamage = normalDamage * chargeMultiplier;
+                    splash = 5;
+                    self.GetComponent<PlayerMovement>().moveX = self.GetComponent<PlayerMovement>().moveX * 25;
+                    self.GetComponent<PlayerMovement>().moveY = self.GetComponent<PlayerMovement>().moveY * 25;
+                    smokeChild.SetActive(true);
+                }
+            }
         }
 
         //charging arrows
         if (Input.GetMouseButton(0) && melee == false && attackRate == 0)
         {
+            self.GetComponent<PlayerMovement>().moveX = 0;
+            self.GetComponent<PlayerMovement>().moveY = 0;
+
             energy.SetActive(true);
             if (chargeShot < 3)
                 chargeShot += 1 * Time.deltaTime;
@@ -162,7 +187,6 @@ public class CombatScript : MonoBehaviour
         //using arrows
         if (Input.GetMouseButtonUp(0) && melee == false && attackRate == 0)
         {
-            
             energy.SetActive(false);
             attackRate = chargeShot * 3;
             if (attackRate <= 8)
@@ -240,8 +264,12 @@ public class CombatScript : MonoBehaviour
             attackSpeed = 50;
 
         //mana recovery
-        if (mana < maxMana)
+        if (mana < maxMana && spells == 2)
             mana += manaRecovery * Time.deltaTime;
+        if (mana < maxMana && (spells == 0 || spells == 1) && !Input.GetMouseButton(1))
+            mana += manaRecovery * Time.deltaTime;
+        if (mana > maxMana)
+            mana = maxMana;
 
         if (defense < 1)
             defense = 1;
@@ -256,9 +284,13 @@ public class CombatScript : MonoBehaviour
             chargeDistance = 0;
         }
 
-        //casting magic
-        if (Input.GetMouseButton(1))  //right click
+
+        //*******MAGIC SPELLS***********
+
+        //casting fire  (Firestorm)
+        if (Input.GetMouseButton(1) && spells == 0 && mana >= 1)  //right click
         {
+            mana -= 5 * Time.deltaTime;
             //prevent player from moving
             self.GetComponent<PlayerMovement>().moveX = 0;
             self.GetComponent<PlayerMovement>().moveY = 0;
@@ -322,6 +354,69 @@ public class CombatScript : MonoBehaviour
                 down.SetActive(true);
             }
         }
+        //Restoration spell (Revivify)
+        if (Input.GetMouseButtonDown(1) && spells == 1 && mana >= 20 && restoreCoolDown <= 0) //right click
+        {
+            Rigidbody2D clone;
+            clone = Instantiate(restorationPrefab, transform.position, transform.rotation) as Rigidbody2D;
+            mana -= 20;
+            health += healthRestore;
+            if (health > maxHealth)
+                health = maxHealth;
+            restoreTimer = 3;
+            restoreCoolDown = 10.0f;
+        }
+
+        if (restoreTimer > 0)
+        {
+            restoreTimer -= 1 * Time.deltaTime;
+            //prevent player from moving
+            self.GetComponent<PlayerMovement>().moveX = 0;
+            self.GetComponent<PlayerMovement>().moveY = 0;
+        }
+        if (restoreCoolDown > 0)
+        {
+            restoreCoolDown -= 1 * Time.deltaTime;
+            calculator3 = restoreCoolDown / 10;
+            CoolDownRestore(calculator3);
+        }
+        if (restoreCoolDown < 0)
+            restoreCoolDown = 0;
+
+
+
+        //Cold Spell (StormShield)
+        if (Input.GetMouseButton(1) && spells == 2 && mana >= 40 & shieldCoolDown <= 0) //right click
+        {
+            shieldChild.SetActive(true);
+            mana -= 40;
+            shieldCoolDown = 50;
+            shieldTimer = 18;
+            armor += shield;
+
+            //prevent player from moving
+            self.GetComponent<PlayerMovement>().moveX = 0;
+            self.GetComponent<PlayerMovement>().moveY = 0;
+        }
+        //turning shield off
+        if (shieldChild.activeSelf && shieldTimer != 0 && shieldTimer < 1)
+        {
+            shieldTimer = 0;
+            shieldChild.SetActive(false);
+            armor -= shield;
+        }
+        //shield timer
+        if (shieldTimer >= 1)
+            shieldTimer -= 1 * Time.deltaTime;
+        if (shieldCoolDown > 0)
+        {
+            calculator2 = shieldCoolDown / 50;
+            CoolDownShield(calculator2);
+            shieldCoolDown -= 1 * Time.deltaTime;
+        }
+        if (shieldCoolDown < 0)
+            shieldCoolDown = 0;
+
 
         //facing right
         if (self.GetComponent<PlayerMovement>().moveX > 0)
@@ -363,7 +458,7 @@ public class CombatScript : MonoBehaviour
         }
     }
 
-    //deactivating smokeChild
+    //de-activating smokeChild
 
     void OnTriggerStay2D(Collider2D target)
     {
@@ -376,5 +471,14 @@ public class CombatScript : MonoBehaviour
     public void SetEnergy(float myEnergy)
     {
         energyBar.transform.localScale = new Vector3(myEnergy, energyBar.transform.localScale.y, energyBar.transform.localScale.z);
+    }
+
+    public void CoolDownRestore(float Restorex)
+    {
+        CoolDownImageRestore.transform.localScale = new Vector3(CoolDownImageRestore.transform.localScale.x, calculator3, CoolDownImageRestore.transform.localScale.z);
+    }
+    public void CoolDownShield(float Sheildx)
+    {
+        CoolDownImageShield.transform.localScale = new Vector3(CoolDownImageShield.transform.localScale.x, calculator2, CoolDownImageShield.transform.localScale.z);
     }
 }
