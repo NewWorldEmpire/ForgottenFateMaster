@@ -44,7 +44,7 @@ public class PlayerCombatOverlay : MonoBehaviour {
 		//print (_player.GetComponent<CombatScript> ().maxExp + " Max Exp");
 		calculatorHealth = _player.GetComponent<CombatScript> ().health / _player.GetComponent<CombatScript> ().maxHealth;
 		calculatorMana = _player.GetComponent<CombatScript> ().mana / _player.GetComponent<CombatScript> ().maxMana;
-		calculatorExp = _player.GetComponent<CombatScript> ().exp / _player.GetComponent<CombatScript> ().maxExp;
+        calculatorExp = _player.GetComponent<ExpSystemPlayer>().exp / _player.GetComponent<ExpSystemPlayer>().maxExp;
 
 		SetHealth (calculatorHealth);
 		SetMana (calculatorMana);
@@ -71,15 +71,15 @@ public class PlayerCombatOverlay : MonoBehaviour {
 
 		placeHolder = _player.GetComponent<CombatScript> ().maxMana;
 		manaMax = placeHolder.ToString ();
-		
-		placeHolder = _player.GetComponent<CombatScript> ().exp;
-		expCurrent = placeHolder.ToString ();
 
-		placeHolder = _player.GetComponent<CombatScript> ().maxExp;
-		expMax = placeHolder.ToString ();
+        placeHolder = _player.GetComponent<ExpSystemPlayer>().exp;
+        expCurrent = placeHolder.ToString();
 
-		placeHolder = _player.GetComponent<CombatScript> ().playerLevel;
-		playerLevel = placeHolder.ToString ();
+        placeHolder = _player.GetComponent<ExpSystemPlayer>().maxExp;
+        expMax = placeHolder.ToString();
+
+        placeHolder = _player.GetComponent<ExpSystemPlayer>().playerLevel;
+        playerLevel = placeHolder.ToString();
 
 		//-----------------Print the Health and Mana--------
 		healthTextbox.text = healthCurrent + " /  " + healthMax;

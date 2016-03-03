@@ -2,42 +2,42 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class PlayerReceivesDamage : MonoBehaviour 
+public class PlayerReceivesDamage : MonoBehaviour
 {
-	public GameObject CBTPrefab;
-	public GameObject _player;
-	
-	
-	[HideInInspector]
-	public int meleeHits; //howmany melee hits the player has been attacked with
-	[HideInInspector]
-	public int rangeHits; //howmany range hits the player has been attacked with
-	//[HideInInspector]
-	float hitChance;
-	float defDex_calc;
-	private float damageTaken;
-	float criticalHit = 0f;
+    public GameObject CBTPrefab;
+    public GameObject _player;
+
+
+    [HideInInspector]
+    public int meleeHits; //howmany melee hits the player has been attacked with
+    [HideInInspector]
+    public int rangeHits; //howmany range hits the player has been attacked with
+    //[HideInInspector]
+    float hitChance;
+    float defDex_calc;
+    private float damageTaken;
+    float criticalHit = 0f;
     public Transform shieldReflectPrefab;
     public GameObject shieldChild;
 
-	
-	
-	// Use this for initialization
-	void Start () 
-	{
-
-		
-	}
-	void Update()
-	{
 
 
-			//print ("Health" + _player.GetComponent<CombatScript> ().health);
+    // Use this for initialization
+    void Start()
+    {
 
-	}
-	
-	
-	//pysical damage
+
+    }
+    void Update()
+    {
+
+
+
+
+    }
+
+
+    //pysical damage
     void OnTriggerStay2D(Collider2D enemy)
     {
         if (enemy.gameObject.GetComponent<EnemiesReceiveDamage>() != null)
