@@ -19,13 +19,19 @@ public class PlayerReceivesDamage : MonoBehaviour
     float criticalHit = 0f;
     public Transform shieldReflectPrefab;
     public GameObject shieldChild;
-
+    //**AUDIO SOURCES**
+    [HideInInspector]
+    public AudioSource au_miss1;
 
 
     // Use this for initialization
     void Start()
     {
-
+        au_miss1 = gameObject.AddComponent<AudioSource>();
+        AudioClip miss1;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        miss1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Sword 1", typeof(AudioClip));
+        au_miss1.clip = miss1;
 
     }
     void Update()
@@ -63,6 +69,9 @@ public class PlayerReceivesDamage : MonoBehaviour
                 {
                     damageTaken = 0;
                     InitiateCBT("*miss*").GetComponent<Animator>().SetTrigger("Miss");
+                    au_miss1.GetComponent<AudioSource>().pitch = Random.Range(0.8f, 1.0f);
+                    au_miss1.GetComponent<AudioSource>().volume = Random.Range(0.8f, 1.0f);
+                    au_miss1.Play();
                     hitChance = 2;
 
                 }

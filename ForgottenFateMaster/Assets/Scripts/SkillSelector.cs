@@ -44,6 +44,7 @@ public class SkillSelector : MonoBehaviour {
 
         if (Input.GetKeyUp("4") && fourUnlocked)
         {
+            player.GetComponent<CombatScript>().spells = 3;
             whiteBox1.SetActive(false);
             whiteBox2.SetActive(false);
             whiteBox3.SetActive(false);

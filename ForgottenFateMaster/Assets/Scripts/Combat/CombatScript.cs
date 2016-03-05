@@ -5,6 +5,7 @@ using System.Collections;
 public class CombatScript : MonoBehaviour 
 {
     public GameObject self;
+    public MouseScript _mouse;
     public Transform playerPOS;
     public GameObject up;
     public GameObject down;
@@ -17,8 +18,9 @@ public class CombatScript : MonoBehaviour
     public float rangeDamage = 3;
     [HideInInspector]
     public float playerDamage = 3;
-    [HideInInspector]
-    public float fireDamage = 0.2f;
+    //[HideInInspector]
+    public float fireDamage = 0.02f;
+    public float lightDamage = 200.0f;
     public float attackSpeed = 5.0f;
     public int defense;
     public int armor;
@@ -31,7 +33,7 @@ public class CombatScript : MonoBehaviour
     public float criticalChance;
     [Range(2, 5)]
     public int criticalDamage;
-    private float chargeMultiplier = 10.0f;
+    private float chargeMultiplier = 100.0f;
     [HideInInspector]
     public float chargeDistance;
     public bool melee = true;
@@ -51,17 +53,29 @@ public class CombatScript : MonoBehaviour
     float calculator;
     float calculator2;
     float calculator3;
+    float calculator4;
     //[HideInInspector]
-    public int spells = 1;
+    public int spells = 0;
     public GameObject shieldChild;
     public int shield;
     public int healthRestore = 25;
+
+    //**spellcooldowns
     float shieldCoolDown;
+    float restoreCoolDown;
+    float fireCoolDown;
+    float lightCoolDown;
+    //**Spell Timers**
     float shieldTimer;
     float restoreTimer;
-    float restoreCoolDown;
+    float fireTimer;
+
+
+    //**image cooldowns**
     public Image CoolDownImageShield;
     public Image CoolDownImageRestore;
+    public Image CoolDownImageFire;
+    public Image CoolDownImageLight;
 
 
     [HideInInspector]
@@ -69,12 +83,22 @@ public class CombatScript : MonoBehaviour
     [HideInInspector]
     public float attackRate;  //rate of attack
 
+    //**AUDIOS SOURCES**
+    [HideInInspector]
+    public AudioSource au_bow1;
+    [HideInInspector]
+    public AudioSource au_arrow1;
+    [HideInInspector]
+    public AudioSource au_arrow2;
+    [HideInInspector]
+    public AudioSource au_swing1;
+
 
     //----------EXP--------
-    //[HideInInspector]
-    //public float exp;
-    //public int playerLevel = 1;
-    //public float maxExp = 0f;
+    [HideInInspector]
+    public float exp;
+    public int playerLevel = 1;
+    public float maxExp = 0f;
 
 
     void Awake()
@@ -86,6 +110,32 @@ public class CombatScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        au_bow1 = gameObject.AddComponent<AudioSource>();
+        AudioClip bow1;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        bow1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Bow", typeof(AudioClip));
+        au_bow1.clip = bow1;
+
+        au_arrow1 = gameObject.AddComponent<AudioSource>();
+        AudioClip arrow1;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        arrow1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Arrow 6", typeof(AudioClip));
+        au_arrow1.clip = arrow1;
+
+        au_arrow2 = gameObject.AddComponent<AudioSource>();
+        AudioClip arrow2;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        arrow2 = (AudioClip)Resources.Load("Audio/Combat Sounds/Arrow 7", typeof(AudioClip));
+        au_arrow2.clip = arrow2;
+
+        au_swing1 = gameObject.AddComponent<AudioSource>();
+        AudioClip swing1;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        swing1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Sword Swish 1", typeof(AudioClip));
+        au_swing1.clip = swing1;
+
+
+
 
     }
 
@@ -148,7 +198,8 @@ public class CombatScript : MonoBehaviour
                     //since it's currently set to 1, only one foe can be hit at a time.
                     //certain spells, such as a multi attack, will require this variable to increase.
 
-                    //play sound
+
+                    au_swing1.Play();
                     //attack animation
                 }
 
@@ -167,11 +218,16 @@ public class CombatScript : MonoBehaviour
             }
         }
 
-        //charging arrows
+        //charging the bow
         if (Input.GetMouseButton(0) && melee == false && attackRate == 0)
         {
             self.GetComponent<PlayerMovement>().moveX = 0;
             self.GetComponent<PlayerMovement>().moveY = 0;
+            if (chargeShot <= 0)
+            {
+                au_bow1.Play();
+            }
+
 
             energy.SetActive(true);
             if (chargeShot < 3)
@@ -187,6 +243,9 @@ public class CombatScript : MonoBehaviour
         //using arrows
         if (Input.GetMouseButtonUp(0) && melee == false && attackRate == 0)
         {
+            au_arrow1.Play();
+            au_arrow2.Play();
+
             energy.SetActive(false);
             attackRate = chargeShot * 3;
             if (attackRate <= 8)
@@ -288,8 +347,33 @@ public class CombatScript : MonoBehaviour
         //*******MAGIC SPELLS***********
 
         //casting fire  (Firestorm)
-        if (Input.GetMouseButton(1) && spells == 0 && mana >= 1)  //right click
+        if (fireTimer > 0)
+            fireTimer -= 5 * Time.deltaTime;
+
+        if (fireTimer <= 0 && fireCoolDown > 0)
         {
+            fireCoolDown -= 10 * Time.deltaTime;
+            calculator4 = fireCoolDown / 100;
+            CoolDownFire(calculator4);
+        }
+        if (fireCoolDown < 0)
+        {
+            fireCoolDown = 0;
+            calculator4 = fireCoolDown / 100;
+            CoolDownFire(calculator4);
+        }
+
+        if (fireTimer < 0)
+            fireTimer = 0;
+
+        if (Input.GetMouseButton(1) && spells == 0 && mana >= 1 && fireCoolDown < 100)  //right click
+        {
+            if (fireCoolDown < 100)
+                fireCoolDown += 40 * Time.deltaTime;
+            calculator4 = fireCoolDown / 100;
+            CoolDownFire(calculator4);
+            fireTimer = 20;
+
             mana -= 5 * Time.deltaTime;
             //prevent player from moving
             self.GetComponent<PlayerMovement>().moveX = 0;
@@ -417,6 +501,28 @@ public class CombatScript : MonoBehaviour
         if (shieldCoolDown < 0)
             shieldCoolDown = 0;
 
+        //Spell 4 (Shock Wave)
+        if (Input.GetMouseButtonDown(1) && spells == 3 && lightCoolDown <= 0)  //right click
+        {
+
+            _mouse.Lightning();
+            lightCoolDown = 80;
+
+
+        }
+        if (lightCoolDown > 0)
+        {
+            calculator4 = lightCoolDown / 80;
+            CoolDownLight(calculator4);
+            lightCoolDown -= 1 * Time.deltaTime;
+        }
+        if (lightCoolDown < 0)
+            lightCoolDown = 0;
+
+
+
+
+        //**directional combat**
 
         //facing right
         if (self.GetComponent<PlayerMovement>().moveX > 0)
@@ -467,18 +573,30 @@ public class CombatScript : MonoBehaviour
             smokeChild.SetActive(false);
         }
     }
+    //charge shot calculations
 
     public void SetEnergy(float myEnergy)
     {
         energyBar.transform.localScale = new Vector3(myEnergy, energyBar.transform.localScale.y, energyBar.transform.localScale.z);
     }
-
+    //fire cooldown calculations
+    public void CoolDownFire(float Fire)
+    {
+        CoolDownImageFire.transform.localScale = new Vector3(CoolDownImageFire.transform.localScale.x, calculator4, CoolDownImageFire.transform.localScale.z);
+    }
+    //cooldown for restoration
     public void CoolDownRestore(float Restorex)
     {
         CoolDownImageRestore.transform.localScale = new Vector3(CoolDownImageRestore.transform.localScale.x, calculator3, CoolDownImageRestore.transform.localScale.z);
     }
+    //cooldown for shield
     public void CoolDownShield(float Sheildx)
     {
         CoolDownImageShield.transform.localScale = new Vector3(CoolDownImageShield.transform.localScale.x, calculator2, CoolDownImageShield.transform.localScale.z);
+    }
+    //cooldown for shield
+    public void CoolDownLight(float Lightx)
+    {
+        CoolDownImageLight.transform.localScale = new Vector3(CoolDownImageLight.transform.localScale.x, calculator4, CoolDownImageLight.transform.localScale.z);
     }
 }
