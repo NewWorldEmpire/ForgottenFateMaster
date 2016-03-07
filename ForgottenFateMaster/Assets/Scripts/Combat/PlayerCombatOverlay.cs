@@ -5,32 +5,32 @@ using System.Collections;
 public class PlayerCombatOverlay : MonoBehaviour {
 	
 	public Image healthBar;
-	public Image manaBar;
+	public Image staminaBar;
 	public Image expBar;
 
 	private string healthCurrent;
 	private string healthMax;
 
-	private string manaCurrent;
-	private string manaMax;
+	private string staminaCurrent;
+	private string staminaMax;
 
 	private string expCurrent;
 	private string expMax;
 	private string playerLevel;
 
 	public Text healthTextbox;
-	public Text manaTexbox;
+	public Text staminaTextbox;
 
 	public Text expCurrentTextbox;
 	public Text expMaxTextbox;
 	public Text playerLevelTextbox;
 
 	float calculatorHealth;
-	float calculatorMana;
+	float calculatorStamina;
 	float calculatorExp;
 
 	public Color32 startColorHealth;
-	public Color32 startColorMana;
+	public Color32 startColorStamina;
 	public Color32 startColorExp;
 	public Color32 endColor;
 
@@ -43,12 +43,12 @@ public class PlayerCombatOverlay : MonoBehaviour {
 		//-------------Calculate the Ratio Between Current and Max-----------------------------------------------
 		//print (_player.GetComponent<CombatScript> ().maxExp + " Max Exp");
 		calculatorHealth = _player.GetComponent<CombatScript> ().health / _player.GetComponent<CombatScript> ().maxHealth;
-		calculatorMana = _player.GetComponent<CombatScript> ().mana / _player.GetComponent<CombatScript> ().maxMana;
+        calculatorStamina = _player.GetComponent<PlayerMovement>().stamina / _player.GetComponent<PlayerMovement>().maxStamina;
         calculatorExp = _player.GetComponent<ExpSystemPlayer>().exp / _player.GetComponent<ExpSystemPlayer>().maxExp;
 
 		SetHealth (calculatorHealth);
-		SetMana (calculatorMana);
-		SetExp (calculatorExp);
+        SetStamina(calculatorStamina);
+        SetExp (calculatorExp);
 
 		//print (calculatorExp + " Calc. EXP");
 		//print (calculatorHealth + " Calc. Health");
@@ -63,14 +63,14 @@ public class PlayerCombatOverlay : MonoBehaviour {
 		placeHolder = _player.GetComponent<CombatScript> ().maxHealth;
 		healthMax = placeHolder.ToString ();
 
-		placeHolder = _player.GetComponent<CombatScript> ().mana;
-		placeHolder = placeHolder * 10;
-		placeHolder = Mathf.Round(placeHolder);
-		placeHolder = placeHolder / 10;
-		manaCurrent = placeHolder.ToString ();
+        placeHolder = _player.GetComponent<PlayerMovement>().stamina;
+        placeHolder = placeHolder * 10;
+        placeHolder = Mathf.Round(placeHolder);
+        placeHolder = placeHolder / 10;
+        staminaCurrent = placeHolder.ToString();
 
-		placeHolder = _player.GetComponent<CombatScript> ().maxMana;
-		manaMax = placeHolder.ToString ();
+        placeHolder = _player.GetComponent<PlayerMovement>().maxStamina;
+        staminaMax = placeHolder.ToString();
 
         placeHolder = _player.GetComponent<ExpSystemPlayer>().exp;
         expCurrent = placeHolder.ToString();
@@ -83,11 +83,11 @@ public class PlayerCombatOverlay : MonoBehaviour {
 
 		//-----------------Print the Health and Mana--------
 		healthTextbox.text = healthCurrent + " /  " + healthMax;
-		manaTexbox.text = manaCurrent + " / " + manaMax;
+        staminaTextbox.text = staminaCurrent + " / " + staminaMax;
 
-		//-----------------Print the EXP and Current Level-------
+        //-----------------Print the EXP and Current Level-------
 
-		expCurrentTextbox.text = expCurrent + " / ";
+        expCurrentTextbox.text = expCurrent + " / ";
 		expMaxTextbox.text = expMax;
 		playerLevelTextbox.text = "Current Level: " + playerLevel;
 
@@ -100,11 +100,11 @@ public class PlayerCombatOverlay : MonoBehaviour {
 		//healthBar.color = Color.Lerp(endColor, startColorHealth, calculatorHealth);
 	}
 	//-------------Setting the Look of the Mana Bar------------------
-	public void SetMana(float myMana)
+	public void SetStamina(float myStamina)
 	{
-		manaBar.transform.localScale = new Vector3 (myMana, manaBar.transform.localScale.y, manaBar.transform.localScale.z);
-		//manaBar.color = Color.Lerp(startColorMana, endColor, calculatorMana);
-	}
+        staminaBar.transform.localScale = new Vector3(myStamina, staminaBar.transform.localScale.y, staminaBar.transform.localScale.z);
+        //manaBar.color = Color.Lerp(startColorMana, endColor, calculatorMana);
+    }
 	//-------------Setting the Look of the Exp Bar------------------
 	public void SetExp(float myExp)
 	{

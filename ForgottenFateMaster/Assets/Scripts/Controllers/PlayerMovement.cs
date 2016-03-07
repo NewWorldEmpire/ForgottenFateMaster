@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour {
 	public float sprint = 2;
 	[HideInInspector]
 	public bool isSprinting = false;
-	private float stamina =5;
+	public float stamina = 5;
 	public int maxStamina = 5;
 	public float staminaRecoveryRate = 0.3f;
 	private float staminaRecharge = 5.0f;
@@ -86,8 +86,6 @@ public class PlayerMovement : MonoBehaviour {
 			//if stamina should happen to go above the max value
 			if (stamina > maxStamina)
 				stamina = maxStamina; 			
-		}
-
-        
+		}        
     }
 }
