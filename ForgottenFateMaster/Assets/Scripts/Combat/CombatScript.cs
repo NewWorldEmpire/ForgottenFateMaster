@@ -94,13 +94,6 @@ public class CombatScript : MonoBehaviour
     public AudioSource au_swing1;
 
 
-    //----------EXP--------
-    [HideInInspector]
-    public float exp;
-    public int playerLevel = 1;
-    public float maxExp = 0f;
-
-
     void Awake()
     {
         mana = maxMana;
@@ -133,10 +126,6 @@ public class CombatScript : MonoBehaviour
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         swing1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Sword Swish 1", typeof(AudioClip));
         au_swing1.clip = swing1;
-
-
-
-
     }
 
     // Update is called once per frame
