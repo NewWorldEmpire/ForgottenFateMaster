@@ -11,9 +11,6 @@ public class CombatScript : MonoBehaviour
     public GameObject down;
     public GameObject left;
     public GameObject right;
-    public float maxMana = 65;
-    public float manaRecovery = 1.0f;
-    public float mana;
     public float normalDamage = 7;
     public float rangeDamage = 3;
     [HideInInspector]
@@ -94,9 +91,16 @@ public class CombatScript : MonoBehaviour
     public AudioSource au_swing1;
 
 
+    //----------EXP--------
+    [HideInInspector]
+    public float exp;
+    public int playerLevel = 1;
+    public float maxExp = 0f;
+
+
     void Awake()
     {
-        mana = maxMana;
+
         health = maxHealth;
     }
 
@@ -126,6 +130,10 @@ public class CombatScript : MonoBehaviour
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         swing1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Sword Swish 1", typeof(AudioClip));
         au_swing1.clip = swing1;
+
+
+
+
     }
 
     // Update is called once per frame
@@ -311,13 +319,6 @@ public class CombatScript : MonoBehaviour
         if (attackSpeed > 50)
             attackSpeed = 50;
 
-        //mana recovery
-        if (mana < maxMana && spells == 2)
-            mana += manaRecovery * Time.deltaTime;
-        if (mana < maxMana && (spells == 0 || spells == 1) && !Input.GetMouseButton(1))
-            mana += manaRecovery * Time.deltaTime;
-        if (mana > maxMana)
-            mana = maxMana;
 
         if (defense < 1)
             defense = 1;
@@ -355,7 +356,7 @@ public class CombatScript : MonoBehaviour
         if (fireTimer < 0)
             fireTimer = 0;
 
-        if (Input.GetMouseButton(1) && spells == 0 && mana >= 1 && fireCoolDown < 100)  //right click
+        if (Input.GetMouseButton(1) && spells == 0 && fireCoolDown < 100)  //right click
         {
             if (fireCoolDown < 100)
                 fireCoolDown += 40 * Time.deltaTime;
@@ -363,7 +364,6 @@ public class CombatScript : MonoBehaviour
             CoolDownFire(calculator4);
             fireTimer = 20;
 
-            mana -= 5 * Time.deltaTime;
             //prevent player from moving
             self.GetComponent<PlayerMovement>().moveX = 0;
             self.GetComponent<PlayerMovement>().moveY = 0;
@@ -428,11 +428,10 @@ public class CombatScript : MonoBehaviour
             }
         }
         //Restoration spell (Revivify)
-        if (Input.GetMouseButtonDown(1) && spells == 1 && mana >= 20 && restoreCoolDown <= 0) //right click
+        if (Input.GetMouseButtonDown(1) && spells == 1 && restoreCoolDown <= 0) //right click
         {
             Rigidbody2D clone;
             clone = Instantiate(restorationPrefab, transform.position, transform.rotation) as Rigidbody2D;
-            mana -= 20;
             health += healthRestore;
             if (health > maxHealth)
                 health = maxHealth;
@@ -459,10 +458,9 @@ public class CombatScript : MonoBehaviour
 
 
         //Cold Spell (StormShield)
-        if (Input.GetMouseButton(1) && spells == 2 && mana >= 40 & shieldCoolDown <= 0) //right click
+        if (Input.GetMouseButton(1) && spells == 2 && shieldCoolDown <= 0) //right click
         {
             shieldChild.SetActive(true);
-            mana -= 40;
             shieldCoolDown = 50;
             shieldTimer = 18;
             armor += shield;
