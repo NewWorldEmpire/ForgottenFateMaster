@@ -47,7 +47,7 @@ public class ConversationScript : MonoBehaviour {
 
         if (!button1.activeSelf && !button2.activeSelf)
         {
-            if (textDone && !convoDone && (Input.GetKeyDown("e")))
+            if (textDone && !convoDone && (Input.GetKeyDown(PlayerPrefs.GetString("Interact"))))
             {
                 text = conversation[convIndex];
                 textDone = false;
@@ -82,7 +82,7 @@ public class ConversationScript : MonoBehaviour {
         {
             textBox.text = text.Substring(0, i);
 			sound.Play ();
-            yield return new WaitForSeconds(writeSpeed);
+            yield return new WaitForSeconds(PlayerPrefs.GetFloat("WriteSpeed"));
         }
         convIndex++;
         textDone = true;       

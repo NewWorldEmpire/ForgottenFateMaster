@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour {
     public int maxStamina = 5;
     public float staminaRecoveryRate = 0.3f;
     private float staminaRecharge = 5.0f;
+    float moveSpeed;
 
     private Vector3 targetPosition;
     private bool isMoving;
@@ -26,7 +27,10 @@ public class PlayerMovement : MonoBehaviour {
     void start()
     {
         stamina = maxStamina;
-
+        if (isSprinting == false)
+        {
+            moveSpeed = speed;
+        }
     }
 
     // Character controller - the mouse will always override the keypad. Also, this control type does not
@@ -36,38 +40,59 @@ public class PlayerMovement : MonoBehaviour {
     void Update()
     {
 
+        if (Input.GetKey(PlayerPrefs.GetString("MoveRight")))
+        {
+            transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(PlayerPrefs.GetString("MoveLeft")))
+        {
+            transform.Translate(Vector3.left * moveSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(PlayerPrefs.GetString("MoveUp")))
+        {
+            transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+        }
+        if (Input.GetKey(PlayerPrefs.GetString("MoveDown")))
+        {
+            transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+        }
+
         //sprinting
-        if (Input.GetKeyDown(KeyCode.Space) && isSprinting == false && stamina > 0)
+        if (Input.GetKeyDown("space") && isSprinting == false && stamina > 0)
             isSprinting = true;
 
-        if (Input.GetKeyUp(KeyCode.Space) && isSprinting == true)
+        if (Input.GetKeyUp("space") && isSprinting == true)
             isSprinting = false;
 
         if (stamina <= 0)
             isSprinting = false;
 
 
-        player.velocity = new Vector3(moveX, moveY, 0);        //use : transform.Translate(moveX, moveY, 0f); if we decide to go back to 3D
+        //player.velocity = new Vector3(moveX, moveY, 0);        //use : transform.Translate(moveX, moveY, 0f); if we decide to go back to 3D
 
 
         // Only when left mouse button is not clicked, will the WSAD controls work.) 
         if (isSprinting == false)
         {
+            moveSpeed = speed;
             //WSAD control
-            moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-            moveY = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+            //moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+            //moveY = Input.GetAxis("Vertical") * speed * Time.deltaTime;
 
         }
         else
         {
+            moveSpeed = speed * sprint;
+            stamina -= 1 * Time.deltaTime;
+            staminaRecharge = 0;
             //sprinting and stamina drain
-            moveX = Input.GetAxis("Horizontal") * speed * sprint * Time.deltaTime;
-            moveY = Input.GetAxis("Vertical") * speed * sprint * Time.deltaTime;
-            if (moveX != 0 || moveY != 0)
-            {
-                stamina -= 1 * Time.deltaTime;
-                staminaRecharge = 0;
-            }
+            //moveX = Input.GetAxis("Horizontal") * speed * sprint * Time.deltaTime;
+            //moveY = Input.GetAxis("Vertical") * speed * sprint * Time.deltaTime;
+            //if (moveX != 0 || moveY != 0)
+            //{
+            //    stamina -= 1 * Time.deltaTime;
+            //    staminaRecharge = 0;
+            //}
 
         }
 
