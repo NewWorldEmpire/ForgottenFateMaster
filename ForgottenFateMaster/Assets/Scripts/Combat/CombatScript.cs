@@ -201,15 +201,15 @@ public class CombatScript : MonoBehaviour
                 }
 
                 //attack during sprint (Dash attack)
-                if ((self.GetComponent<PlayerMovement>().isSprinting) && (self.GetComponent<PlayerMovement>().moveX != 0 || self.GetComponent<PlayerMovement>().moveY != 0))
+                if ((self.GetComponent<PlayerMovement>().isSprinting))// && (self.GetComponent<PlayerMovement>().moveX != 0 || self.GetComponent<PlayerMovement>().moveY != 0))
                 {
                     chargeDistance = 1.2f;
                     Vector3 playerPOS = self.transform.position;
                     smokeChild.transform.position = playerPOS;
                     playerDamage = normalDamage * chargeMultiplier;
                     splash = 5;
-                    self.GetComponent<PlayerMovement>().moveX = self.GetComponent<PlayerMovement>().moveX * 25;
-                    self.GetComponent<PlayerMovement>().moveY = self.GetComponent<PlayerMovement>().moveY * 25;
+                    self.GetComponent<PlayerMovement>().moveSpeed = self.GetComponent<PlayerMovement>().moveSpeed * 25;
+                    //self.GetComponent<PlayerMovement>().moveY = self.GetComponent<PlayerMovement>().moveY * 25;
                     smokeChild.SetActive(true);
                 }
             }
@@ -218,8 +218,8 @@ public class CombatScript : MonoBehaviour
         //charging the bow
         if (Input.GetMouseButton(0) && melee == false && attackRate == 0)
         {
-            self.GetComponent<PlayerMovement>().moveX = 0;
-            self.GetComponent<PlayerMovement>().moveY = 0;
+            self.GetComponent<PlayerMovement>().moveSpeed = 0;
+            //self.GetComponent<PlayerMovement>().moveY = 0;
             if (chargeShot <= 0)
             {
                 au_bow1.Play();
@@ -310,8 +310,8 @@ public class CombatScript : MonoBehaviour
         {
             attackRate -= attackSpeed * Time.deltaTime;
             //prevents moving during attack
-            self.GetComponent<PlayerMovement>().moveX = 0;
-            self.GetComponent<PlayerMovement>().moveY = 0;
+            self.GetComponent<PlayerMovement>().moveSpeed = 0;
+            //self.GetComponent<PlayerMovement>().moveY = 0;
         }
 
         if (attackRate < 0)
@@ -365,8 +365,8 @@ public class CombatScript : MonoBehaviour
             fireTimer = 20;
 
             //prevent player from moving
-            self.GetComponent<PlayerMovement>().moveX = 0;
-            self.GetComponent<PlayerMovement>().moveY = 0;
+            self.GetComponent<PlayerMovement>().moveSpeed = 0;
+            //self.GetComponent<PlayerMovement>().moveY = 0;
 
             if (!target)
                 target = GameObject.FindWithTag("Mouse").transform;
@@ -443,8 +443,8 @@ public class CombatScript : MonoBehaviour
         {
             restoreTimer -= 1 * Time.deltaTime;
             //prevent player from moving
-            self.GetComponent<PlayerMovement>().moveX = 0;
-            self.GetComponent<PlayerMovement>().moveY = 0;
+            self.GetComponent<PlayerMovement>().moveSpeed = 0;
+            //self.GetComponent<PlayerMovement>().moveY = 0;
         }
         if (restoreCoolDown > 0)
         {
@@ -466,8 +466,8 @@ public class CombatScript : MonoBehaviour
             armor += shield;
 
             //prevent player from moving
-            self.GetComponent<PlayerMovement>().moveX = 0;
-            self.GetComponent<PlayerMovement>().moveY = 0;
+            self.GetComponent<PlayerMovement>().moveSpeed = 0;
+            //self.GetComponent<PlayerMovement>().moveY = 0;
         }
         //turning shield off
         if (shieldChild.activeSelf && shieldTimer != 0 && shieldTimer < 1)
@@ -512,7 +512,7 @@ public class CombatScript : MonoBehaviour
         //**directional combat**
 
         //facing right
-        if (self.GetComponent<PlayerMovement>().moveX > 0)
+        if (self.GetComponent<PlayerMovement>().moveRight)
         {
             up.SetActive(false);
             down.SetActive(false);
@@ -522,7 +522,7 @@ public class CombatScript : MonoBehaviour
         }
 
         //facing left
-        if (self.GetComponent<PlayerMovement>().moveX < 0)
+        if (self.GetComponent<PlayerMovement>().moveLeft)
         {
             up.SetActive(false);
             down.SetActive(false);
@@ -532,7 +532,7 @@ public class CombatScript : MonoBehaviour
         }
 
         //facing up
-        if (self.GetComponent<PlayerMovement>().moveY > 0)
+        if (self.GetComponent<PlayerMovement>().moveUp)
         {
             up.SetActive(true);
             down.SetActive(false);
@@ -542,7 +542,7 @@ public class CombatScript : MonoBehaviour
         }
 
         //facing down
-        if (self.GetComponent<PlayerMovement>().moveY < 0)
+        if (self.GetComponent<PlayerMovement>().moveDown)
         {
             up.SetActive(false);
             down.SetActive(true);

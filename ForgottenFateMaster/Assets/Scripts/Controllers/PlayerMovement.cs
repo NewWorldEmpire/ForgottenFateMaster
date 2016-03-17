@@ -13,7 +13,8 @@ public class PlayerMovement : MonoBehaviour {
     public int maxStamina = 5;
     public float staminaRecoveryRate = 0.3f;
     private float staminaRecharge = 5.0f;
-    float moveSpeed;
+    [HideInInspector]
+    public float moveSpeed;
 
     private Vector3 targetPosition;
     private bool isMoving;
@@ -22,6 +23,15 @@ public class PlayerMovement : MonoBehaviour {
     public float moveX;
     [HideInInspector]
     public float moveY;
+
+    [HideInInspector]
+    public bool moveUp;
+    [HideInInspector]
+    public bool moveDown;
+    [HideInInspector]
+    public bool moveRight;
+    [HideInInspector]
+    public bool moveLeft;
 
     //const int LEFT_MOUSE_BUTTON = 0;
     void start()
@@ -43,18 +53,34 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetKey(PlayerPrefs.GetString("MoveRight")))
         {
             transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);
+            moveRight = true;
+            moveLeft = false;
+            moveUp = false;
+            moveDown = false;
         }
         if (Input.GetKey(PlayerPrefs.GetString("MoveLeft")))
         {
             transform.Translate(Vector3.left * moveSpeed * Time.deltaTime);
+            moveRight = false;
+            moveLeft = true;
+            moveUp = false;
+            moveDown = false;
         }
         if (Input.GetKey(PlayerPrefs.GetString("MoveUp")))
         {
             transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+            moveRight = false;
+            moveLeft = false;
+            moveUp = true;
+            moveDown = false;
         }
         if (Input.GetKey(PlayerPrefs.GetString("MoveDown")))
         {
             transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+            moveRight = false;
+            moveLeft = false;
+            moveUp = false;
+            moveDown = true;
         }
 
         //sprinting
