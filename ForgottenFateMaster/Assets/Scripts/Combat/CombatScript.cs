@@ -390,7 +390,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 135.0F && fAngle > 45.0F)
             {
                 //print ("up");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(3, 5);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
                 down.SetActive(false);
                 left.SetActive(false);
                 right.SetActive(false);
@@ -400,7 +400,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 45.0F || fAngle > 315.0F)
             {
                 //print ("right");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(3, 5);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
                 up.SetActive(false);
                 down.SetActive(false);
                 left.SetActive(false);
@@ -410,7 +410,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 225.0F && fAngle > 135.0F)
             {
                 //print ("left");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(3, 5);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
                 up.SetActive(false);
                 down.SetActive(false);
                 right.SetActive(false);
@@ -420,7 +420,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 315.0F && fAngle > 225.0F)
             {
                 //print ("down");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(3, 5);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
                 up.SetActive(false);
                 left.SetActive(false);
                 right.SetActive(false);
