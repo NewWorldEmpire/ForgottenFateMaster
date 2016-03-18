@@ -89,6 +89,14 @@ public class CombatScript : MonoBehaviour
     public AudioSource au_arrow2;
     [HideInInspector]
     public AudioSource au_swing1;
+    [HideInInspector]
+    public AudioSource au_flame1;
+    [HideInInspector]
+    public AudioSource au_flame2;
+    [HideInInspector]
+    public AudioSource au_heal;
+    [HideInInspector]
+    public AudioSource au_light;
 
 
     //----------EXP--------
@@ -109,27 +117,56 @@ public class CombatScript : MonoBehaviour
     {
         au_bow1 = gameObject.AddComponent<AudioSource>();
         AudioClip bow1;
+
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         bow1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Bow", typeof(AudioClip));
         au_bow1.clip = bow1;
 
         au_arrow1 = gameObject.AddComponent<AudioSource>();
         AudioClip arrow1;
+
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         arrow1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Arrow 6", typeof(AudioClip));
         au_arrow1.clip = arrow1;
 
         au_arrow2 = gameObject.AddComponent<AudioSource>();
         AudioClip arrow2;
+
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         arrow2 = (AudioClip)Resources.Load("Audio/Combat Sounds/Arrow 7", typeof(AudioClip));
         au_arrow2.clip = arrow2;
 
         au_swing1 = gameObject.AddComponent<AudioSource>();
         AudioClip swing1;
+
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         swing1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Sword Swish 1", typeof(AudioClip));
         au_swing1.clip = swing1;
+
+        au_flame1 = gameObject.AddComponent<AudioSource>();
+        AudioClip flame1;
+
+        flame1 = (AudioClip)Resources.Load("Audio/Spells/magicFlamethrowerSoundEffect", typeof(AudioClip));
+        au_flame1.clip = flame1;
+
+        au_flame2 = gameObject.AddComponent<AudioSource>();
+        AudioClip flame2;
+
+        flame2 = (AudioClip)Resources.Load("Audio/Spells/magicFlamethrowerSoundEffectTail", typeof(AudioClip));
+        au_flame2.clip = flame2;
+
+        au_heal = gameObject.AddComponent<AudioSource>();
+        AudioClip heal;
+
+        heal = (AudioClip)Resources.Load("Audio/Spells/magicHealingSpellSoundEffect", typeof(AudioClip));
+        au_heal.clip = heal;
+
+        au_light = gameObject.AddComponent<AudioSource>();
+        AudioClip light;
+
+        light = (AudioClip)Resources.Load("Audio/Spells/magicLightningSoundEffect", typeof(AudioClip));
+        au_light.clip = light;
+
 
 
 
@@ -227,12 +264,12 @@ public class CombatScript : MonoBehaviour
 
 
             energy.SetActive(true);
-            if (chargeShot < 3)
+            if (chargeShot < 1.0f)
                 chargeShot += 1 * Time.deltaTime;
-            if (chargeShot > 3)
-                chargeShot = 3;
-            playerDamage = rangeDamage * chargeShot * 3;
-            calculator = chargeShot / 3;
+            if (chargeShot > 1.0f)
+                chargeShot = 1.0f;
+            playerDamage = rangeDamage * chargeShot * 2;
+            calculator = chargeShot / 1.0f;
             SetEnergy(calculator);
             //print ("charge is... " + chargeShot);
         }
@@ -240,13 +277,14 @@ public class CombatScript : MonoBehaviour
         //using arrows
         if (Input.GetMouseButtonUp(0) && melee == false && attackRate == 0)
         {
+            au_bow1.Stop();
             au_arrow1.Play();
             au_arrow2.Play();
 
             energy.SetActive(false);
             attackRate = chargeShot * 3;
-            if (attackRate <= 8)
-                attackRate = 8;
+            if (attackRate <= 3)
+                attackRate = 3;
 
             if (!target)
                 target = GameObject.FindWithTag("Mouse").transform;
@@ -267,7 +305,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 135.0F && fAngle > 45.0F)
             {
                 //print ("up");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(10, 14);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(15, 20);
                 down.SetActive(false);
                 left.SetActive(false);
                 right.SetActive(false);
@@ -277,7 +315,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 45.0F || fAngle > 315.0F)
             {
                 //print ("right");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(10, 14);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(15, 20);
                 up.SetActive(false);
                 down.SetActive(false);
                 left.SetActive(false);
@@ -287,7 +325,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 225.0F && fAngle > 135.0F)
             {
                 //print ("left");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(10, 14);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(15, 20);
                 up.SetActive(false);
                 down.SetActive(false);
                 right.SetActive(false);
@@ -297,7 +335,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 315.0F && fAngle > 225.0F)
             {
                 //print ("down");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(10, 14);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(15, 20);
                 up.SetActive(false);
                 left.SetActive(false);
                 right.SetActive(false);
@@ -356,6 +394,12 @@ public class CombatScript : MonoBehaviour
         if (fireTimer < 0)
             fireTimer = 0;
 
+        if (!Input.GetMouseButton(1) && au_flame1.isPlaying)
+        {
+            au_flame1.Stop();
+            au_flame2.Play();
+        }
+
         if (Input.GetMouseButton(1) && spells == 0 && fireCoolDown < 100)  //right click
         {
             if (fireCoolDown < 100)
@@ -384,13 +428,18 @@ public class CombatScript : MonoBehaviour
             if (fAngle < 0.0f)
                 fAngle += 360.0f;
 
+            //playing the sound effect
+            if (!au_flame1.isPlaying)
+                au_flame1.Play();
+
+
             //flame goes in the direction of the mouse
 
 
             if (fAngle <= 135.0F && fAngle > 45.0F)
             {
                 //print ("up");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(7, 10);
                 down.SetActive(false);
                 left.SetActive(false);
                 right.SetActive(false);
@@ -400,7 +449,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 45.0F || fAngle > 315.0F)
             {
                 //print ("right");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(7, 10);
                 up.SetActive(false);
                 down.SetActive(false);
                 left.SetActive(false);
@@ -410,7 +459,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 225.0F && fAngle > 135.0F)
             {
                 //print ("left");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(7, 10);
                 up.SetActive(false);
                 down.SetActive(false);
                 right.SetActive(false);
@@ -420,7 +469,7 @@ public class CombatScript : MonoBehaviour
             if (fAngle <= 315.0F && fAngle > 225.0F)
             {
                 //print ("down");
-                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(5, 7);
+                clone.velocity = (GameObject.Find("Mouse").transform.position - transform.position).normalized * Random.Range(7, 10);
                 up.SetActive(false);
                 left.SetActive(false);
                 right.SetActive(false);
@@ -430,6 +479,7 @@ public class CombatScript : MonoBehaviour
         //Restoration spell (Revivify)
         if (Input.GetMouseButtonDown(1) && spells == 1 && restoreCoolDown <= 0) //right click
         {
+            au_heal.Play();
             Rigidbody2D clone;
             clone = Instantiate(restorationPrefab, transform.position, transform.rotation) as Rigidbody2D;
             health += healthRestore;
@@ -494,6 +544,7 @@ public class CombatScript : MonoBehaviour
 
             _mouse.Lightning();
             lightCoolDown = 80;
+            au_light.Play();
 
 
         }

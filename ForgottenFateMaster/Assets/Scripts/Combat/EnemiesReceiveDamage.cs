@@ -37,6 +37,10 @@ public class EnemiesReceiveDamage : MonoBehaviour {
     //** SOUNDS **
     [HideInInspector]
     public AudioSource au_miss1;
+    [HideInInspector]
+    public AudioSource au_arrowhit;
+    [HideInInspector]
+    public AudioSource au_swordhit;
 
 
 
@@ -57,6 +61,18 @@ public class EnemiesReceiveDamage : MonoBehaviour {
         // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
         miss1 = (AudioClip)Resources.Load("Audio/Combat Sounds/Sword 1", typeof(AudioClip));
         au_miss1.clip = miss1;
+
+        au_arrowhit = gameObject.AddComponent<AudioSource>();
+        AudioClip arrowhit;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        arrowhit = (AudioClip)Resources.Load("Audio/Combat Sounds/weaponBowArrowHitSoundEffect", typeof(AudioClip));
+        au_arrowhit.clip = arrowhit;
+
+        au_swordhit = gameObject.AddComponent<AudioSource>();
+        AudioClip swordhit;
+        // Resources must be in any folder named Resources.  load as type and cast as type because Unity returns Object by default.
+        swordhit = (AudioClip)Resources.Load("Audio/Combat Sounds/weaponSwordHitSoundEffect", typeof(AudioClip));
+        au_swordhit.clip = swordhit;
     }
 
     // Update is called once per frame
@@ -172,6 +188,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
                 }
                 if (hitChance <= 1 && (hitChance < defDex_calc))
                 {
+                    au_swordhit.Play();
                     hitChance = 2;
                     hit = true;
                     damageTaken = _player.GetComponent<CombatScript>().playerDamage;
@@ -261,6 +278,7 @@ public class EnemiesReceiveDamage : MonoBehaviour {
             }
             if (hitChance <= 1 && (hitChance < defDex_calc))
             {
+                au_arrowhit.Play();
                 Destroy(ar.gameObject);
                 hitChance = 2;
                 //damageTaken = _player.GetComponent<CombatScript>().playerDamage;
