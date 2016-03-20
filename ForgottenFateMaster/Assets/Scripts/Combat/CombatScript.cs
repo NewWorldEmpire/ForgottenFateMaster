@@ -99,11 +99,11 @@ public class CombatScript : MonoBehaviour
     public AudioSource au_light;
 
 
-    //----------EXP--------
-    [HideInInspector]
-    public float exp;
-    public int playerLevel = 1;
-    public float maxExp = 0f;
+    ////----------EXP--------
+    //[HideInInspector]
+    //public float exp;
+    //public int playerLevel = 1;
+    //public float maxExp = 0f;
 
 
     void Awake()

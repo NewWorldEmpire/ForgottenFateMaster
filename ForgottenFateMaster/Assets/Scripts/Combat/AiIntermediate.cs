@@ -119,7 +119,7 @@ public class AiIntermediate : MonoBehaviour {
                 if (random == 1)
                 {
                     runAway = true;
-                    print("Run away!");
+                    //print("Run away!");
                 }
             }
         }
@@ -131,19 +131,19 @@ public class AiIntermediate : MonoBehaviour {
         {
             if (playerTouch == false && runAway == false && objectTouch == false && enemyTouch == false)
             {
-                print("PlayerNav");
+                //print("PlayerNav");
                 MovingPhase(targetPlayer, normalMovementSpeed);
             }
         }
         //-------Enemy Moves Around Obstacle-----------
         if (objectNav)
         {
-            print("ObjectNav");
+            //print("ObjectNav");
             MovingPhase(targetObject, normalMovementSpeed + 2);
         }
         else if (enemyNav)
         {
-            print("EnemyNav");
+            //print("EnemyNav");
             MovingPhase(targetObject, normalMovementSpeed + 2);
         }
 
@@ -156,7 +156,7 @@ public class AiIntermediate : MonoBehaviour {
 
     void MovingPhase(Transform target, float movingSpeed)
     {
-        print(target);
+        //print(target);
         if (target.position.y > transform.position.y)
         {
             transform.position += transform.up * movingSpeed * Time.deltaTime;
@@ -198,7 +198,7 @@ public class AiIntermediate : MonoBehaviour {
         }
         else if (playerC.gameObject.tag == "Object")
         {
-            print("entered");
+            //print("entered");
             objectTouch = true;
             targetObject = CreateVectorPoints(playerC.collider);
         }
@@ -212,13 +212,13 @@ public class AiIntermediate : MonoBehaviour {
                 if (_enemy.GetComponent<AiIntermediate>().movingUp)
                 {
                     enemyNav = true;
-                    print("he's going up!");
+                   // print("he's going up!");
 
                     hit = RayLeft(targetRayCast); //check left
 
                     if (hit.collider == null)
                     {
-                        print("move to the left!");
+                        //print("move to the left!");
                         targetObject.position = vectorDestination;
                         objectTouch = false;
                     }
@@ -228,7 +228,7 @@ public class AiIntermediate : MonoBehaviour {
 
                         if (hit.collider == null)
                         {
-                            print("move to the right!");
+                            //print("move to the right!");
                             targetObject.position = vectorDestination;
                             objectTouch = false;
                         }
@@ -237,7 +237,7 @@ public class AiIntermediate : MonoBehaviour {
                             hit = RayUp(targetRayCast); //check up
                             if (hit.collider == null)
                             {
-                                print("move to the up!");
+                               // print("move to the up!");
                                 targetObject.position = vectorDestination;
                                 objectTouch = false;
                             }
@@ -246,13 +246,13 @@ public class AiIntermediate : MonoBehaviour {
                                 hit = RayDown(targetRayCast); //check down
                                 if (hit.collider == null)
                                 {
-                                    print("move to the down!");
+                                    //print("move to the down!");
                                     targetObject.position = vectorDestination;
                                     objectTouch = false;
                                 }
                                 else
                                 {
-                                    print("HELP I'M TRAPPED!");
+                                    //print("HELP I'M TRAPPED!");
                                     enemyNav = false;
                                 }
                             }
@@ -264,12 +264,12 @@ public class AiIntermediate : MonoBehaviour {
                 else if (_enemy.GetComponent<AiIntermediate>().movingRight)
                 {
                     enemyNav = true;
-                    print("he's going right!");
+                    //print("he's going right!");
 
                     hit = RayUp(targetRayCast); //check up
                     if (hit.collider == null)
                     {
-                        print("move to the up!");
+                        //print("move to the up!");
                         targetObject.position = vectorDestination;
                         objectTouch = false;
                     }
@@ -279,7 +279,7 @@ public class AiIntermediate : MonoBehaviour {
 
                         if (hit.collider == null)
                         {
-                            print("move to the down!");
+                            //print("move to the down!");
                             targetObject.position = vectorDestination;
                             objectTouch = false;
                         }
@@ -290,7 +290,7 @@ public class AiIntermediate : MonoBehaviour {
 
                             if (hit.collider == null)
                             {
-                                print("move to the left!");
+                                //print("move to the left!");
                                 targetObject.position = vectorDestination;
                                 objectTouch = false;
                             }
@@ -300,13 +300,13 @@ public class AiIntermediate : MonoBehaviour {
 
                                 if (hit.collider == null)
                                 {
-                                    print("move to the right!");
+                                    //print("move to the right!");
                                     targetObject.position = vectorDestination;
                                     objectTouch = false;
                                 }
                                 else
                                 {
-                                    print("HELP I'M TRAPPED~");
+                                   // print("HELP I'M TRAPPED~");
                                     enemyNav = false;
                                 }
                             }
@@ -318,7 +318,7 @@ public class AiIntermediate : MonoBehaviour {
             }
             else //playerTouch = true
             {
-                print("This guy's attacking....");
+               // print("This guy's attacking....");
 
                 _collider = playerC.collider;
 
@@ -327,7 +327,7 @@ public class AiIntermediate : MonoBehaviour {
                     //numHits++;
                     vectorDestination = new Vector3(_ownCollider.bounds.center.x, (_ownCollider.bounds.center.y + 6), 0);
                     playerC.gameObject.GetComponent<AiIntermediate>().targetObject.position = vectorDestination;
-                    print("We're going around!");
+                   // print("We're going around!");
                     enemyNav = true;
                 }
                 else
@@ -335,13 +335,9 @@ public class AiIntermediate : MonoBehaviour {
                     //numHits++;
                     vectorDestination = new Vector3((_ownCollider.bounds.center.x + 6), _ownCollider.bounds.center.y, 0);
                     targetObject.position = vectorDestination;
-                    print("We're going up!");
+                    //print("We're going up!");
                     enemyNav = true;
                 }
-
-
-
-
             }
         }
     }
@@ -415,7 +411,7 @@ public class AiIntermediate : MonoBehaviour {
         }
         else if (enemyTouch)
         {
-            print("HEHE, we're touching");
+            //print("HEHE, we're touching");
             objectNav = false;
             enemyNav = true;
         }
@@ -442,7 +438,7 @@ public class AiIntermediate : MonoBehaviour {
     {
         if (_point.tag == "Point")
         {
-            print("you got there!");
+            //print("you got there!");
             enemyNav = false;
             enemyTouch = false;
         }
