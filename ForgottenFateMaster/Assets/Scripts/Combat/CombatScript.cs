@@ -99,13 +99,6 @@ public class CombatScript : MonoBehaviour
     public AudioSource au_light;
 
 
-    ////----------EXP--------
-    //[HideInInspector]
-    //public float exp;
-    //public int playerLevel = 1;
-    //public float maxExp = 0f;
-
-
     void Awake()
     {
 
@@ -178,7 +171,7 @@ public class CombatScript : MonoBehaviour
     {
 
         //switching from melee to range
-        if (Input.GetKeyUp(KeyCode.Q))
+        if (Input.GetKeyUp(KeyCode.Q) && chargeShot <= 0)
         {
             if (melee == false)
             {
@@ -217,7 +210,7 @@ public class CombatScript : MonoBehaviour
         if (criticalChance > 0.08f)
             criticalChance = 0.08f;
 
-        if (Input.GetMouseButtonDown(0) && attackRate == 0) //left click
+        if (Input.GetMouseButtonDown(0) && attackRate == 0 && restoreTimer <= 0 && fireTimer <= 0) //left click
         {
             if (melee == true)
             {
@@ -253,7 +246,7 @@ public class CombatScript : MonoBehaviour
         }
 
         //charging the bow
-        if (Input.GetMouseButton(0) && melee == false && attackRate == 0)
+        if (Input.GetMouseButton(0) && melee == false && attackRate == 0 && restoreTimer <= 0 && fireTimer <= 0)
         {
             self.GetComponent<PlayerMovement>().moveSpeed = 0;
             //self.GetComponent<PlayerMovement>().moveY = 0;
@@ -275,7 +268,7 @@ public class CombatScript : MonoBehaviour
         }
 
         //using arrows
-        if (Input.GetMouseButtonUp(0) && melee == false && attackRate == 0)
+        if (Input.GetMouseButtonUp(0) && melee == false && attackRate == 0 && restoreTimer <= 0 && fireTimer <= 0)
         {
             au_bow1.Stop();
             au_arrow1.Play();
@@ -400,7 +393,7 @@ public class CombatScript : MonoBehaviour
             au_flame2.Play();
         }
 
-        if (Input.GetMouseButton(1) && spells == 0 && fireCoolDown < 100)  //right click
+        if (Input.GetMouseButton(1) && spells == 0 && fireCoolDown < 100 && chargeShot <= 0 && attackRate <= 0)  //right click
         {
             if (fireCoolDown < 100)
                 fireCoolDown += 40 * Time.deltaTime;
@@ -477,7 +470,7 @@ public class CombatScript : MonoBehaviour
             }
         }
         //Restoration spell (Revivify)
-        if (Input.GetMouseButtonDown(1) && spells == 1 && restoreCoolDown <= 0) //right click
+        if (Input.GetMouseButtonDown(1) && spells == 1 && restoreCoolDown <= 0 && chargeShot <= 0 && attackRate <= 0)   //right click
         {
             au_heal.Play();
             Rigidbody2D clone;
@@ -508,7 +501,7 @@ public class CombatScript : MonoBehaviour
 
 
         //Cold Spell (StormShield)
-        if (Input.GetMouseButton(1) && spells == 2 && shieldCoolDown <= 0) //right click
+        if (Input.GetMouseButton(1) && spells == 2 && shieldCoolDown <= 0 && chargeShot <= 0 && attackRate <= 0)  //right click
         {
             shieldChild.SetActive(true);
             shieldCoolDown = 50;
@@ -539,7 +532,7 @@ public class CombatScript : MonoBehaviour
             shieldCoolDown = 0;
 
         //Spell 4 (Shock Wave)
-        if (Input.GetMouseButtonDown(1) && spells == 3 && lightCoolDown <= 0)  //right click
+        if (Input.GetMouseButtonDown(1) && spells == 3 && lightCoolDown <= 0 && chargeShot <= 0 && attackRate <= 0)   //right click
         {
 
             _mouse.Lightning();
