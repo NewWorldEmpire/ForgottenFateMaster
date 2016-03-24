@@ -4,13 +4,15 @@ using System.Collections;
 
 public class TriggerText : MonoBehaviour {
 
+    public GameObject mainCam;
     public GameObject player;
     public GameObject panel;
     public Text text;
     public Image face;
     public Sprite NPCImage;
-    public GameObject skills;
+    public GameObject spells;
     public GameObject playerStatusHUD;
+    public GameObject characterStats;
 
     [HideInInspector]
     public GameObject target;    
@@ -77,8 +79,10 @@ public class TriggerText : MonoBehaviour {
     void EndConvo()
     {
         panel.SetActive(false);
-        skills.SetActive(true);
+        spells.SetActive(true);
         playerStatusHUD.SetActive(true);
+        characterStats.SetActive(true);
+        mainCam.GetComponent<LetterBook>().enabled = true;
         player.GetComponent<PlayerMovement>().enabled = true;
         player.GetComponent<CombatScript>().enabled = true;
         ConversationScript.convIndex = 0;
@@ -90,12 +94,14 @@ public class TriggerText : MonoBehaviour {
     void BeginConvo()
     {
         panel.SetActive(true);
-        skills.SetActive(false);
+        spells.SetActive(false);
         playerStatusHUD.SetActive(false);
+        characterStats.SetActive(false);
         face.sprite = NPCImage;                                              //this should change to being an index of an array of images so we can have the players face appear when the player talks     
         player.GetComponent<PlayerMovement>().enabled = false;
         player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         player.GetComponent<CombatScript>().enabled = false;
+        mainCam.GetComponent<LetterBook>().enabled = false;
     }
 
     void AdvanceDialogue()

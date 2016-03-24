@@ -3,9 +3,12 @@ using System.Collections;
 
 public class PauseGame : MonoBehaviour {
 
+    public GameObject player;
     public GameObject pauseMenu;
-    public GameObject skills;
+    public GameObject spells;
     public GameObject playerStatusHUD;
+    public GameObject characterStats;
+    public GameObject toolTip;
     bool paused = false;
 
     void Start()
@@ -20,15 +23,21 @@ public class PauseGame : MonoBehaviour {
             paused = togglePause();
             if (paused)
             {
+                player.GetComponent<CombatScript>().enabled = false;
                 pauseMenu.SetActive(true);
-                skills.SetActive(false);
+                spells.SetActive(false);
                 playerStatusHUD.SetActive(false);
+                characterStats.SetActive(false);
+                toolTip.SetActive(false);
             }
             else
             {
+                player.GetComponent<CombatScript>().enabled = false;
                 pauseMenu.SetActive(false);
-                skills.SetActive(true);
+                spells.SetActive(true);
                 playerStatusHUD.SetActive(true);
+                characterStats.SetActive(true);
+                toolTip.SetActive(true);
             }
         }
     }
