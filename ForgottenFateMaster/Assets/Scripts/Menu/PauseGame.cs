@@ -32,7 +32,7 @@ public class PauseGame : MonoBehaviour {
             }
             else
             {
-                player.GetComponent<CombatScript>().enabled = false;
+                player.GetComponent<CombatScript>().enabled = true;
                 pauseMenu.SetActive(false);
                 spells.SetActive(true);
                 playerStatusHUD.SetActive(true);
