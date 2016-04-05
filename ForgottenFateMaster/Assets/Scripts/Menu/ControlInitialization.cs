@@ -3,56 +3,45 @@ using System.Collections;
 
 public class ControlInitialization : MonoBehaviour {
 
-    public bool interactChanged;
-    public bool upChanged;
-    public bool leftChanged;
-    public bool downChanged;
-    public bool rightChanged;
-    public bool switchWeapChanged;
-    public bool spell1Changed;
-    public bool spell2Changed;
-    public bool spell3Changed;
-    public bool spell4Changed;
-
     // Use this for initialization
     void Start () {
-        if(PlayerPrefs.GetString("Interact") == null)
+        if(PlayerPrefs.GetString("Interact") == " ")
         {
             PlayerPrefs.SetString("Interact", "e");
         }
-        if (PlayerPrefs.GetString("MoveUp") == null)
+        if (PlayerPrefs.GetString("MoveUp") == " ")
         {
             PlayerPrefs.SetString("MoveUp", "w");
         }
-        if (PlayerPrefs.GetString("MoveLeft") == null)
+        if (PlayerPrefs.GetString("MoveLeft") == " ")
         {
             PlayerPrefs.SetString("MoveLeft", "a");
         }
-        if (PlayerPrefs.GetString("MoveDown") == null)
+        if (PlayerPrefs.GetString("MoveDown") == " ")
         {
             PlayerPrefs.SetString("MoveDown", "s");
         }
-        if (PlayerPrefs.GetString("MoveRight") == null)
+        if (PlayerPrefs.GetString("MoveRight") == " ")
         {
             PlayerPrefs.SetString("MoveRight", "d");
         }
-        if (PlayerPrefs.GetString("SwitchWeap") == null)
+        if (PlayerPrefs.GetString("SwitchWeap") == " ")
         {
             PlayerPrefs.SetString("SwitchWeap", "q");
         }
-        if (PlayerPrefs.GetString("Spell1") == null)
+        if (PlayerPrefs.GetString("Spell1") == " ")
         {
             PlayerPrefs.SetString("Spell1", "1");
         }
-        if (PlayerPrefs.GetString("Spell2") == null)
+        if (PlayerPrefs.GetString("Spell2") == " ")
         {
             PlayerPrefs.SetString("Spell2", "2");
         }
-        if (PlayerPrefs.GetString("Spell3") == null)
+        if (PlayerPrefs.GetString("Spell3") == " ")
         {
             PlayerPrefs.SetString("Spell3", "3");
         }
-        if (PlayerPrefs.GetString("Spell4") == null)
+        if (PlayerPrefs.GetString("Spell4") == " ")
         {
             PlayerPrefs.SetString("Spell4", "4");
         }
