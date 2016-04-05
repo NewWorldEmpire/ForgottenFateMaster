@@ -21,6 +21,6 @@ public class EnterControl : MonoBehaviour {
     public void SetControl(InputField input)
     {   
         PlayerPrefs.SetString(controlName, input.text);
-        fieldText.text = PlayerPrefs.GetString(controlName);                 
+        fieldText.text = PlayerPrefs.GetString(controlName);
     }
 }
