@@ -14,6 +14,7 @@ public class TriggerText : MonoBehaviour {
     public Sprite[] faceArray;
     public GameObject spells;
     public GameObject playerStatusHUD;
+    public GameObject characterStats;
 
     [HideInInspector]
     public GameObject target;
@@ -123,7 +124,8 @@ public class TriggerText : MonoBehaviour {
 	{
 		panel.SetActive(true);
 		spells.SetActive(false);
-		playerStatusHUD.SetActive(false);   
+		playerStatusHUD.SetActive(false);
+        characterStats.SetActive(false); 
 		player.GetComponent<PlayerMovement>().enabled = false;
 		player.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 		player.GetComponent<CombatScript>().enabled = false;
@@ -136,7 +138,8 @@ public class TriggerText : MonoBehaviour {
 		panel.SetActive (false);
 		spells.SetActive (true);
 		playerStatusHUD.SetActive (true);
-		player.GetComponent<PlayerMovement> ().enabled = true;
+        characterStats.SetActive(true);
+        player.GetComponent<PlayerMovement> ().enabled = true;
 		player.GetComponent<CombatScript> ().enabled = true;
 		text.GetComponent<ConversationScript> ().convoIndex = 0;
 		text.GetComponent<ConversationScript> ().convoDone = false;

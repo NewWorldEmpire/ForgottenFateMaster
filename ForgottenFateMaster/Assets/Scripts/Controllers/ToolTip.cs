@@ -54,6 +54,10 @@ public class ToolTip : MonoBehaviour
         {
             spell2();
         }
+        if (shuffle == 3)
+        {
+            Armor2();
+        }
     }
 
     public void ArmorTipOff()
@@ -127,8 +131,13 @@ public class ToolTip : MonoBehaviour
         au_click.Play();
         _ToolTipName.text = "Armor";
         _ToolTipDesc.text = "The amount of damage that is reduced.";
-        _ToolTipAttri.text = "Armor: " + _player.GetComponent<CombatScript>().armor;
         _armor.transform.localScale = new Vector3(_armor.transform.localScale.x + 0.10f, _armor.transform.localScale.y + 0.10f, 0f);
+        shuffle = 3;
+    }
+
+    public void Armor2()
+    {
+        _ToolTipAttri.text = "Armor: " + _player.GetComponent<CombatScript>().armor;
     }
 
     public void LuckTipOn()
