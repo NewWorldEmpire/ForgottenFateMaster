@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class PlayerMovement : MonoBehaviour {
-	//NOTE: If the public float, speed, is too high, the player may experience some serious turbulance! Player may 
-	//fly through solid objects or other objects not otherwise meant to be passable.
+    ///NOTE: If the public float, speed, is too high, the player may experience some serious turbulance! Player may 
+    //fly through solid objects or other objects not otherwise meant to be passable.
     public Rigidbody2D player;
     public float speed = 200.0f;
     public float sprint = 2;
@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour {
     private float staminaRecharge = 5.0f;
     [HideInInspector]
     public float moveSpeed;
+
 
     private Vector3 targetPosition;
     private bool isMoving;
@@ -33,9 +34,19 @@ public class PlayerMovement : MonoBehaviour {
     [HideInInspector]
     public bool moveLeft;
 
+
+    public GameObject self;
+
+    //animation
+    public Animator anim;
+
     //const int LEFT_MOUSE_BUTTON = 0;
     void start()
     {
+
+
+        anim = GetComponent<Animator>();
+
         stamina = maxStamina;
         if (isSprinting == false)
         {
@@ -49,38 +60,113 @@ public class PlayerMovement : MonoBehaviour {
 
     void Update()
     {
+        if (self.GetComponent<CombatScript>().attackRate == 0)
+        {
+            anim.SetBool("MeleeLeft", false);
+            anim.SetBool("MeleeRight", false);
+            anim.SetBool("MeleeUp", false);
+            anim.SetBool("MeleeDown", false);
+        }
+        if (self.GetComponent<CombatScript>().casting == false)
+        {
+            anim.SetBool("CastLeft", false);
+            anim.SetBool("CastRight", false);
+            anim.SetBool("CastUp", false);
+            anim.SetBool("CastDown", false);
+        }
 
-        if (Input.GetKey(PlayerPrefs.GetString("MoveRight")))
+
+        if (self.GetComponent<CombatScript>().attackRate <= 0 && self.GetComponent<CombatScript>().casting == false)
         {
-            transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);
-            moveRight = true;
-            moveLeft = false;
-            moveUp = false;
-            moveDown = false;
-        }
-        if (Input.GetKey(PlayerPrefs.GetString("MoveLeft")))
-        {
-            transform.Translate(Vector3.left * moveSpeed * Time.deltaTime);
-            moveRight = false;
-            moveLeft = true;
-            moveUp = false;
-            moveDown = false;
-        }
-        if (Input.GetKey(PlayerPrefs.GetString("MoveUp")))
-        {
-            transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
-            moveRight = false;
-            moveLeft = false;
-            moveUp = true;
-            moveDown = false;
-        }
-        if (Input.GetKey(PlayerPrefs.GetString("MoveDown")))
-        {
-            transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
-            moveRight = false;
-            moveLeft = false;
-            moveUp = false;
-            moveDown = true;
+            if (Input.GetKey(PlayerPrefs.GetString("MoveRight")))
+            {
+                transform.Translate(Vector3.right * moveSpeed * Time.deltaTime);
+                if (!Input.GetKey(PlayerPrefs.GetString("MoveLeft")) && !Input.GetKey(PlayerPrefs.GetString("MoveUp")) && !Input.GetKey(PlayerPrefs.GetString("MoveDown")))
+                {
+                    anim.Play("WalkRight");
+                }
+                moveRight = true;
+                moveLeft = false;
+                moveUp = false;
+                moveDown = false;
+                anim.SetBool("WalkRight", true);
+                anim.SetBool("WalkDown", false);
+                anim.SetBool("WalkUp", false);
+                anim.SetBool("WalkLeft", false);
+                anim.speed = 1.0f;
+
+            }
+            else
+            {
+                anim.SetBool("WalkRight", false);
+                anim.SetBool("Right", true);
+            }
+            if (Input.GetKey(PlayerPrefs.GetString("MoveLeft")))
+            {
+                transform.Translate(Vector3.left * moveSpeed * Time.deltaTime);
+                if (!Input.GetKey(PlayerPrefs.GetString("MoveRight")) && !Input.GetKey(PlayerPrefs.GetString("MoveUp")) && !Input.GetKey(PlayerPrefs.GetString("MoveDown")))
+                {
+                    anim.Play("WalkLeft");
+                }
+                moveRight = false;
+                moveLeft = true;
+                moveUp = false;
+                moveDown = false;
+                anim.SetBool("WalkLeft", true);
+                anim.SetBool("WalkRight", false);
+                anim.SetBool("WalkUp", false);
+                anim.SetBool("WalkDown", false);
+                anim.speed = 1.0f;
+            }
+            else
+            {
+                anim.SetBool("WalkLeft", false);
+                anim.SetBool("Left", true);
+            }
+            if (Input.GetKey(PlayerPrefs.GetString("MoveUp")))
+            {
+                transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+                if (!Input.GetKey(PlayerPrefs.GetString("MoveLeft")) && !Input.GetKey(PlayerPrefs.GetString("MoveRight")) && !Input.GetKey(PlayerPrefs.GetString("MoveDown")))
+                {
+                    anim.Play("WalkUp");
+                }
+                moveRight = false;
+                moveLeft = false;
+                moveUp = true;
+                moveDown = false;
+                anim.SetBool("WalkUp", true);
+                anim.SetBool("WalkDown", false);
+                anim.SetBool("WalkRight", false);
+                anim.SetBool("WalkLeft", false);
+                anim.speed = 1.0f;
+            }
+            else
+            {
+                anim.SetBool("WalkUp", false);
+                anim.SetBool("Up", true);
+            }
+            if (Input.GetKey(PlayerPrefs.GetString("MoveDown")))
+            {
+                transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+                if (!Input.GetKey(PlayerPrefs.GetString("MoveLeft")) && !Input.GetKey(PlayerPrefs.GetString("MoveUp")) && !Input.GetKey(PlayerPrefs.GetString("MoveRight")))
+                {
+                    anim.Play("WalkDown");
+                }
+                moveRight = false;
+                moveLeft = false;
+                moveUp = false;
+                moveDown = true;
+                anim.SetBool("WalkDown", true);
+                anim.SetBool("WalkRight", false);
+                anim.SetBool("WalkUp", false);
+                anim.SetBool("WalkLeft", false);
+                anim.speed = 1.0f;
+            }
+            else
+            {
+                anim.SetBool("WalkDown", false);
+                anim.SetBool("Down", true);
+            }
         }
 
         //sprinting
@@ -100,6 +186,7 @@ public class PlayerMovement : MonoBehaviour {
         // Only when left mouse button is not clicked, will the WSAD controls work.) 
         if (isSprinting == false)
         {
+            anim.speed = 1.0f;
             moveSpeed = speed;
             //WSAD control
             //moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
@@ -108,6 +195,7 @@ public class PlayerMovement : MonoBehaviour {
         }
         else
         {
+            anim.speed = 4.0f;
             moveSpeed = speed * sprint;
             stamina -= 1 * Time.deltaTime;
             staminaRecharge = 0;
@@ -141,5 +229,8 @@ public class PlayerMovement : MonoBehaviour {
             if (stamina > maxStamina)
                 stamina = maxStamina;
         }
+
     }
+
+
 }
